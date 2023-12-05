@@ -1,0 +1,31 @@
+//plugins {
+//    id 'java'
+//}
+//
+//group 'com.awesome'
+//version '0.0.1-SNAPSHOT'
+//
+//repositories {
+//    mavenCentral()
+//}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation project(':domain')
+    implementation project(':storage')
+}
+
+//test {
+//    useJUnitPlatform()
+//}
+
+tasks.named('bootJar'){ // bootJar 세팅을 켜기
+    enabled = true
+}
+
+tasks.named('jar'){ // jar 설정은 끄기
+    enabled = false
+}
+

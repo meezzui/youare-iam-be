@@ -1,0 +1,5 @@
+rootProject.name = 'yourare-iam-server'
+include 'common'
+include 'domain'
+include 'storage'
+
