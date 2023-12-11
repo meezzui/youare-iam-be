@@ -1,14 +1,10 @@
-plugins {
-    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' //스프링 부트용 spring boot jpa 추상화 라이브러리
     runtimeOnly 'com.mysql:mysql-connector-j' // 데이터베이스 연결. springboot 버전 3.xx 는 connector-j만 지원
 
     // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
@@ -23,11 +19,15 @@ tasks.named('jar'){ // jar 설정은 끄기
 
 def querydslDir = "$buildDir/generated/querydsl"
 
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
+sourceSets {
+    main.java.srcDirs += [ querydslDir ]
 }
 
-sourceSets {
-    main.java.srcDir querydslDir
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslDir)
 }
+
+clean.doLast {
+    file(querydslDir).deleteDir()
+}
+
