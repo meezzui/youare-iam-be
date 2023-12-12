@@ -51,6 +51,7 @@ subprojects { // 각 모듈에 적용할 공통 설정
         compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
         runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
         runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+        implementation 'com.auth0:java-jwt:4.0.0'
     }
 
     tasks.named('bootJar') { //빌드할 때 bootjar 파일로 하겠다는 의미
