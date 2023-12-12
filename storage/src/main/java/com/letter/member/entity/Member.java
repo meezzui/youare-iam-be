@@ -43,6 +43,10 @@ public class Member {
     @Column(name = "MBR_EML", nullable = false, length = 200)
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "CP_ID")
+    private Couple couple;
+
     @CreatedDate
     @NotNull
     @Column(name = "CREATED_AT", nullable = false)
@@ -54,9 +58,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "invitedMember", fetch = FetchType.LAZY)
-    private List<Couple> couples = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<InviteOpponent> inviteOpponents = new ArrayList<>();
