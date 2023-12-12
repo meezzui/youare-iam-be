@@ -1,6 +1,7 @@
 package com.letter.member;
 
-//import com.fasterxml.jackson.databind.JsonNode;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.letter.jwt.JwtProperties;
 import com.letter.member.dto.OAuthResponse;
@@ -9,12 +10,17 @@ import com.letter.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.google.gson.JsonParser;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -24,7 +30,6 @@ import java.util.Optional;
 public class OAuthService {
 
     private final MemberRepository memberRepository;
-    private final JwtProperties jwtProperties;
 
     /**
      * 카카오 사용자 회원정보 담긴 것 가져오기
@@ -33,10 +38,11 @@ public class OAuthService {
      * @return
      */
     @Transactional
-    public OAuthResponse getOAuthInfo(String code){
+    public ResponseEntity getOAuthInfo(String code){
         // dto에 담은 사용자 정보 가져오기
         OAuthResponse userInfo = getKakaoUserInfo(code);
         // 이메일과 미디어 구분으로 디비에 해당 회원 정보가 있는지 조회
+        // TODO: findByAndEmailAndMediaSeparator -> findByEmailAndMediaSeparator 로 이름 수정하기
         Optional<Member> member = memberRepository.findByAndEmailAndMediaSeparator(userInfo.getEmail(), "kakao");
 
         // 회원 정보가 있으면 디비에 저장없이 토큰 발급
@@ -51,9 +57,29 @@ public class OAuthService {
             // 디비에 저장
             memberRepository.save(member1);
         }
-        // access token 발급
 
-        return userInfo;
+        // jwt 토큰 생성
+        String jwtToken = createJwtToken(userInfo);
+        //헤더에 토큰 담아주기
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING,JwtProperties.TOKEN_PREFIX + jwtToken);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(null);
+    }
+
+    /**
+     * jwt 토큰 생성하기
+     * @param userInfo
+     * @return
+     */
+    private String createJwtToken(OAuthResponse userInfo) {
+
+        String jwtToken = JWT.create()
+                .withSubject(userInfo.getEmail()) // Payload 에 들어갈 등록된 클레임 을 설정한다.
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME)) //JwtProperties 의 만료 시간 필드를 불러와 넣어준다.
+                .withClaim("nickname", userInfo.getNickname()) // Payload 에 들어갈 개인 클레임 을 설정한다.
+                                                                     // .withClaim(이름, 내용) 형태로 작성한다. 사용자를 식별할 수 있는 값과, 따로 추가하고 싶은 값을 자유롭게 넣는다.
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); // 사용할 암호화 알고리즘과 secret 값 셋팅
+        return jwtToken;
     }
 
 
