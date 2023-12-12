@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,7 @@ public class InviteOpponent {
     @Column(name = "LINK_KEY", nullable = false, length = 200)
     private String linkKey;
 
+    @CreatedDate
     @NotNull
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
