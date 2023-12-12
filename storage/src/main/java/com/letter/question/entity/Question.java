@@ -40,10 +40,10 @@ public class Question {
     @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<InviteOpponent> inviteOpponents = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<SelectQuestion> selectQuestions = new ArrayList<>();
 
 }
