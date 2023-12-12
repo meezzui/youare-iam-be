@@ -1,5 +1,4 @@
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // 스프링 부트용 spring boot jpa 추상화 라이브러리
     implementation project(':storage') // storage 모듈 의존성 추가
 }
 
