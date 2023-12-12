@@ -4,16 +4,25 @@ import com.letter.member.entity.Couple;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @Entity
 @Table(name = "YI_SELECT_QUESTION", schema = "YI")
+@DynamicInsert
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class SelectQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +43,8 @@ public class SelectQuestion {
 
     @Size(max = 1)
     @NotNull
-    @Column(name = "IS_SHOW", nullable = false, length = 1)
+    @ColumnDefault("Y")
+    @Column(name = "IS_SHOW", length = 1)
     private String isShow;
 
     @CreatedDate
@@ -42,7 +52,7 @@ public class SelectQuestion {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "selectQuestion")
+    @OneToMany(mappedBy = "selectQuestion", fetch = FetchType.LAZY)
     private List<Answer> answer = new ArrayList<>();
 
 }
