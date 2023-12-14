@@ -18,5 +18,12 @@ public class QuestionResponse {
 
     }
 
+    @Getter
+    @RequiredArgsConstructor
+    public static class SelectedQuestion {
+        @NotNull
+        private final Long selectedQuestionId;
+    }
+
 }
 

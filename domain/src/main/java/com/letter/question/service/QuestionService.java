@@ -37,7 +37,8 @@ public class QuestionService {
     }
 
     // TODO servletServerHttpResponse 여러개인 것 수정
-    public void selectOrRegisterQuestion(QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
+    public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
+        Long selectedQuestion = null;
 
         // 질문 프리셋에 있는 질문 등록
         if (selectOrRegisterQuestion.getQuestionId() != null){
@@ -53,21 +54,19 @@ public class QuestionService {
             if (countSelectQuestion == 1) {
                 throw new RuntimeException(HttpStatus.BAD_REQUEST.name());
             }
-
-
+            
             // 정상적인 플로우, 질문 프리셋에서 질문을 고른 경우
-            saveQuestion(question, couple);
-
-
+            selectedQuestion = saveQuestion(question, couple);
+            
         } else {
             // TODO 커스텀 질문 등록
             log.info("커스텀 질문 등록");
         }
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(new QuestionResponse.SelectedQuestion(selectedQuestion));
     }
 
-    public void saveQuestion(Question question, Couple couple) {
-
+    public Long saveQuestion(Question question, Couple couple) {
 
         final SelectQuestion selectQuestion = SelectQuestion.builder()
                 .question(question)
@@ -75,6 +74,7 @@ public class QuestionService {
                 .build();
         selectQuestionRepository.save(selectQuestion);
 
+        return selectQuestion.getId();
     }
 
 }
