@@ -50,7 +50,7 @@ public class Member {
     @Column(name = "MBR_EML", nullable = false, length = 200)
     private String email;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CP_ID")
     private Couple couple;
 
