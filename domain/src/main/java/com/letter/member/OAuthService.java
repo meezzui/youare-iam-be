@@ -10,7 +10,6 @@ import com.letter.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.google.gson.JsonParser;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,14 +51,16 @@ public class OAuthService {
             Long memberCount = memberRepository.countAllBy() + 1;
             //디비에 회원 정보 저장(회원 아이디,이메일,이름,미디어 구분 값,리프레쉬 토큰)
             // Member 엔티티에 값 셋팅
-            Member member1 = new Member();
-            member1.saveUserInfo(userInfo, memberCount);
+            Member mbrEntity = new Member();
+            mbrEntity.saveUserInfo(userInfo, memberCount);
             // 디비에 저장
-            memberRepository.save(member1);
+            memberRepository.save(mbrEntity);
         }
 
+        // 회원 테이블에 저장된 회원 아이디 가져오기
+        String memberId = member.get().getId();
         // jwt 토큰 생성
-        String jwtToken = createJwtToken(userInfo);
+        String jwtToken = createJwtToken(memberId,userInfo);
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProperties.HEADER_STRING,JwtProperties.TOKEN_PREFIX + jwtToken);
@@ -71,10 +72,10 @@ public class OAuthService {
      * @param userInfo
      * @return
      */
-    private String createJwtToken(OAuthResponse userInfo) {
+    private String createJwtToken(String memberId, OAuthResponse userInfo) {
 
         String jwtToken = JWT.create()
-                .withSubject(userInfo.getEmail()) // Payload 에 들어갈 등록된 클레임 을 설정한다.
+                .withSubject(memberId) // Payload 에 들어갈 등록된 클레임 을 설정한다.
                 .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME)) //JwtProperties 의 만료 시간 필드를 불러와 넣어준다.
                 .withClaim("nickname", userInfo.getNickname()) // Payload 에 들어갈 개인 클레임 을 설정한다.
                                                                      // .withClaim(이름, 내용) 형태로 작성한다. 사용자를 식별할 수 있는 값과, 따로 추가하고 싶은 값을 자유롭게 넣는다.
