@@ -33,6 +33,10 @@ public class InviteOpponent {
     @Column(name = "LINK_KEY", nullable = false, length = 200)
     private String linkKey;
 
+    @NotNull
+    @Column(name = "ANS", nullable = false, length = 1000)
+    private String answer;
+
     @CreatedDate
     @NotNull
     @Column(name = "CREATED_AT", nullable = false)
