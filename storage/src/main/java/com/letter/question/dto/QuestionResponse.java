@@ -9,7 +9,8 @@ public class QuestionResponse {
     @Getter
     @Setter
     public static class QuestionList {
-        private Long id;
+        @NotNull
+        private Long questionId;
 
         @NotNull
         @Size(max = 200)

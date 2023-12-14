@@ -46,7 +46,7 @@ public class RegisterQuestion {
     @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "registerQuestion")
+    @OneToMany(mappedBy = "registerQuestion", fetch = FetchType.LAZY)
     private List<SelectQuestion> selectQuestions = new ArrayList<>();
 
 }
