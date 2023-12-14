@@ -3,8 +3,9 @@ package com.letter.member.dto;
 import com.letter.member.entity.InviteOpponent;
 import com.letter.member.entity.Member;
 import com.letter.question.entity.Question;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.*;
-
 
 @Data
 public class MemberRequest {

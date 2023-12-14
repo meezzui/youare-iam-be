@@ -18,11 +18,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
+    private final QuestionRepository questionRepository;
+
     private final InviteOpponentRepository inviteOpponentRepository;
 
+    /**
+     * 상대 초대 링크 생성 api
+     * @param request
+     * @return
+     */
     public MemberResponse.CreateInviteLinkResponse createInviteLink(MemberRequest.CreateInviteLinkRequest request) {
+
         // 링크 고유 키 생성
         String uuid = UUID.randomUUID().toString();
 
@@ -46,6 +53,8 @@ public class MemberService {
                 .linkKey(uuid)
                 .question(question.getQuestionContents())
                 .build();
-
     }
+
+
+
 }
