@@ -27,7 +27,7 @@ public class MemberController {
             @ApiResponse(responseCode= "201",description = "초대 링크 키 생성 완료")
     })
     @PostMapping("/link")
-    public ResponseEntity<MemberResponse.CreateInviteLinkResponse> createInviteLink(@RequestBody @Valid MemberRequest.ReqCreateInviteLink request){
+    public ResponseEntity<MemberResponse.CreateInviteLinkResponse> createInviteLink(@RequestBody @Valid MemberRequest.CreateInviteLinkRequest request){
         // TODO: 사용자 인증
 
         return ResponseEntity.ok().body(memberService.createInviteLink(request));
