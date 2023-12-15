@@ -22,5 +22,15 @@ public class MemberResponse {
         private String question;
     }
 
+    @RequiredArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    @Data
+    @ApiResponses(value ={
+            @ApiResponse(description = "초대 수락 response")
+    })
+    public static class AcceptInviteLinkResponse{
+        private Long selectedQuestionId;
+    }
 
 }
