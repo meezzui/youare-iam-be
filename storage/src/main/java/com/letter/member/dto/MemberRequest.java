@@ -65,5 +65,15 @@ public class MemberRequest {
         }
     }
 
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class InvitedPersonInfoRequest{ // 초대된 링크로 랜딩되는 페이지 관련 request
+
+        private String linkKey;
+
+    }
+
 
 }

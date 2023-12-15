@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Invite", description = "초대 관련 API")
 @RestController
@@ -44,5 +41,14 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.acceptedInvite(request));
     }
 
+    @Operation(summary = "초대 링크로 랜딩되는 페이지 API")
+    @ApiResponses(value ={
+            @ApiResponse(responseCode= "200",description = "정보 가져오기 완료")
+    })
+    @GetMapping ("/info")
+    public ResponseEntity<MemberResponse.InvitedPersonInfoResponse> getInvitedPersonInfo(@Valid MemberRequest.InvitedPersonInfoRequest request){
+        // TODO: 사용자 인증
 
+        return ResponseEntity.ok().body(memberService.getInvitedPersonInfo(request));
+    }
 }

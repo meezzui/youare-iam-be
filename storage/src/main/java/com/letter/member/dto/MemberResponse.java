@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 public class MemberResponse {
 
@@ -31,6 +33,18 @@ public class MemberResponse {
     })
     public static class AcceptInviteLinkResponse{
         private Long selectedQuestionId;
+    }
+
+    @RequiredArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    @Data
+    @ApiResponses(value ={
+            @ApiResponse(description = "초대 링크로 랜딩되는 페이지 관련 response")
+    })
+    public static class InvitedPersonInfoResponse{
+        private List<Long> selectedQuestionId;
+        private String invitedPersonName;
     }
 
 }
