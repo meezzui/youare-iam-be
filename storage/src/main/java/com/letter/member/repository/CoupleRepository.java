@@ -1,14 +1,12 @@
 package com.letter.member.repository;
 
+import com.letter.member.entity.Couple;
 import com.letter.member.entity.InviteOpponent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 
 @Repository
-public interface InviteOpponentRepository extends JpaRepository<InviteOpponent,Long> {
+public interface CoupleRepository extends JpaRepository<Couple,Long> {
 
-    Optional<InviteOpponent> findQuestionByLinkKey(String linkKey);
 }

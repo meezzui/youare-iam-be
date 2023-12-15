@@ -4,6 +4,8 @@ import com.letter.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,6 +21,8 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Answer {
     @Id

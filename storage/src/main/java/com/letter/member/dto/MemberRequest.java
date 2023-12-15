@@ -1,8 +1,11 @@
 package com.letter.member.dto;
 
+import com.letter.member.entity.Couple;
 import com.letter.member.entity.InviteOpponent;
 import com.letter.member.entity.Member;
+import com.letter.question.entity.Answer;
 import com.letter.question.entity.Question;
+import com.letter.question.entity.SelectQuestion;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.*;
@@ -14,7 +17,7 @@ public class MemberRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    public static class CreateInviteLinkRequest{
+    public static class CreateInviteLinkRequest{ // 초대 링크 생성 관련 request
 
         private Long questionId;
         private String answer;
@@ -25,6 +28,39 @@ public class MemberRequest {
                     .member(member)
                     .answer(answer)
                     .linkKey(uuid)
+                    .build();
+        }
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class AcceptInviteLinkRequest{ // 초대 수락 관련 request
+
+        private String linkKey;
+        private String answer;
+
+        public Couple toCoupleInfo() {
+            return Couple.builder()
+                    .isShow("Y")
+                    .build();
+        }
+
+        public SelectQuestion toSelectQuestion(Couple couple,Question question) {
+            return SelectQuestion.builder()
+                    .question(question)
+                    .couple(couple)
+                    .isShow("Y")
+                    .build();
+        }
+
+        public Answer toAnswerInfo(Member member, SelectQuestion selectQuestion, String answer) {
+            return Answer.builder()
+                    .member(member)
+                    .selectQuestion(selectQuestion)
+                    .answerContents(answer)
+                    .isShow("Y")
                     .build();
         }
     }

@@ -33,4 +33,16 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.createInviteLink(request));
     }
 
+    @Operation(summary = "초대 수락 API")
+    @ApiResponses(value ={
+            @ApiResponse(responseCode= "201",description = "초대 수락 완료")
+    })
+    @PostMapping("/accept")
+    public ResponseEntity<MemberResponse.AcceptInviteLinkResponse> acceptedInvite(@RequestBody @Valid MemberRequest.AcceptInviteLinkRequest request){
+        // TODO: 사용자 인증
+
+        return ResponseEntity.ok().body(memberService.acceptedInvite(request));
+    }
+
+
 }
