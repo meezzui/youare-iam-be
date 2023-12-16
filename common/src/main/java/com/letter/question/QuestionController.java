@@ -1,7 +1,6 @@
 package com.letter.question;
 
-import com.letter.question.dto.QuestionRequest;
-import com.letter.question.dto.QuestionResponse;
+import com.letter.question.dto.*;
 import com.letter.question.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -41,5 +40,25 @@ public class QuestionController {
     @PostMapping("/questions")
     public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(@RequestBody QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
         return questionService.selectOrRegisterQuestion(selectOrRegisterQuestion);
+    }
+
+    @Operation(summary = "대화 상세 페이지 조회", description = "주고 받은 질문과 답변 조회 API")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "조회 성공",
+                            content = @Content(schema = @Schema(implementation = LetterPaginationDto.class))
+                    )
+            }
+    )
+    @GetMapping("/letters")
+    public ResponseEntity<LetterPaginationDto> getLetterList(
+            @RequestParam(
+                    name = "next-cursor",
+                    required = false,
+                    defaultValue = "1"
+            ) int nextCursor) {
+        return questionService.getLetterList(nextCursor);
     }
 }
