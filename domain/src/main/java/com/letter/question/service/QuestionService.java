@@ -1,5 +1,7 @@
 package com.letter.question.service;
 
+import com.letter.exception.CustomException;
+import com.letter.exception.ErrorCode;
 import com.letter.member.entity.Couple;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.CoupleCustomRepositoryImpl;
@@ -35,10 +37,11 @@ public class QuestionService {
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
+        // TODO 이미 선택한 질문 제외하고 응답
+
         return ResponseEntity.ok(questionCustomRepository.findAll());
     }
 
-    // TODO servletServerHttpResponse 여러개인 것 수정
     public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
         Long selectedQuestion = null;
 
@@ -50,19 +53,18 @@ public class QuestionService {
         if (selectOrRegisterQuestion.getQuestionId() != null) {
 
             // 질문 프리셋에 없는 질문일 경우
-            final Question question = questionRepository.findQuestionById(selectOrRegisterQuestion.getQuestionId())
-                    .orElseThrow(() -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
-                    );
+            final Question question = questionRepository.findQuestionById(selectOrRegisterQuestion.getQuestionId()).orElseThrow(
+                    () -> new CustomException(ErrorCode.QUESTION_NOT_FOUND)
+            );
 
-            // TODO 이미 고른 질문일 경우
             final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId("1");
             if (couple == null) {
-                throw new RuntimeException(HttpStatus.BAD_REQUEST.name());
+                throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
             }
 
             final int countSelectQuestion = selectQuestionRepository.countByQuestionAndCouple(question, couple);
             if (countSelectQuestion == 1) {
-                throw new RuntimeException(HttpStatus.BAD_REQUEST.name());
+                throw new CustomException(ErrorCode.ALREADY_SELECTED_QUESTION);
             }
 
             // 정상적인 플로우, 질문 프리셋에서 질문을 고른 경우
@@ -94,7 +96,7 @@ public class QuestionService {
 
         final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId("1");
         if (couple == null) {
-            throw new RuntimeException(HttpStatus.BAD_REQUEST.name());
+            throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
         }
 
         final LetterPaginationDto letterPaginationDto = new LetterPaginationDto();
