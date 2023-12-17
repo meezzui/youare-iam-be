@@ -1,5 +1,7 @@
 package com.letter.question.service;
 
+import com.letter.exception.CustomException;
+import com.letter.exception.ErrorCode;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.MemberRepository;
 import com.letter.question.dto.AnswerRequest;
@@ -27,13 +29,13 @@ public class AnswerService {
         );
 
         final SelectQuestion selectQuestion = selectQuestionRepository.findById(answerRequest.getSelectQuestionId()).orElseThrow(
-                () -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
+                () -> new CustomException(ErrorCode.SELECT_QUESTION_NOT_FOUND)
         );
 
         final int count = answerRepository.countByMemberAndSelectQuestion(member, selectQuestion);
 
         if (count == 1) {
-            throw new RuntimeException(HttpStatus.BAD_REQUEST.name());
+            throw new CustomException(ErrorCode.ALREADY_ANSWER);
         }
 
         answerRepository.save(new Answer(member, selectQuestion, answerRequest.getAnswer()));
