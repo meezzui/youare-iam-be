@@ -33,19 +33,22 @@ public class QuestionService {
 
     public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList() {
         // TODO 사용자 인증 추가
-        memberRepository.findById("1").orElseThrow(
+        final Member member = memberRepository.findById("2023121300004").orElseThrow(
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
-        // TODO 이미 선택한 질문 제외하고 응답
+        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+        if (couple == null) {
+            throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
+        }
 
-        return ResponseEntity.ok(questionCustomRepository.findAll());
+        return ResponseEntity.ok(questionCustomRepository.findAllByCouple(couple));
     }
 
     public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
         Long selectedQuestion = null;
 
-        memberRepository.findById("1").orElseThrow(
+        final Member member = memberRepository.findById("2023121300004").orElseThrow(
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
@@ -57,7 +60,7 @@ public class QuestionService {
                     () -> new CustomException(ErrorCode.QUESTION_NOT_FOUND)
             );
 
-            final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId("1");
+            final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
             if (couple == null) {
                 throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
             }
@@ -90,11 +93,11 @@ public class QuestionService {
     }
 
     public ResponseEntity<LetterPaginationDto> getLetterList(int nextCursor) {
-        final Member member = memberRepository.findById("1").orElseThrow(
+        final Member member = memberRepository.findById("2023121300004").orElseThrow(
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
-        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId("1");
+        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
         if (couple == null) {
             throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
         }
@@ -108,7 +111,12 @@ public class QuestionService {
             letterDetailResponses.remove(25);
         }
 
+        if (letterDetailResponses.isEmpty()) {
+            return ResponseEntity.ok(null);
+        }
+
         final List<DetailAnswerDto> databaseDetailAnswerDtoList = answerCustomRepository.findAllBySelectQuestionId(letterDetailResponses.get(0).getSelectQuestionId());
+        Collections.reverse(letterDetailResponses);
 
         final HashMap<Long, List<DetailAnswerDto>> letterDetailHashmap = new HashMap<>();
 
