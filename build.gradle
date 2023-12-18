@@ -38,7 +38,20 @@ subprojects { // 각 모듈에 적용할 공통 설정
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Swagger
+        implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+
+        // JSON Parser를 사용하기 위해 추가
+        implementation 'com.google.code.gson:gson:2.8.7'
+
+        // JWT
+        compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+        implementation 'com.auth0:java-jwt:4.0.0'
     }
 
     tasks.named('bootJar') { //빌드할 때 bootjar 파일로 하겠다는 의미
