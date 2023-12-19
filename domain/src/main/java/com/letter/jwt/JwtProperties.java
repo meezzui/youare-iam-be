@@ -1,6 +1,9 @@
 package com.letter.jwt;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface JwtProperties{
     String SECRET = ""; // 해싱 메시지 암호화 한 것 넣기
     long EXPIRATION_TIME =  30 * 60 * 1000L; // 유효시간은 30분

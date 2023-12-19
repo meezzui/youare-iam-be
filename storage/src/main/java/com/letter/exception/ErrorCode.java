@@ -15,7 +15,14 @@ public enum ErrorCode {
 
     /* 409 */
     ALREADY_SELECTED_QUESTION(HttpStatus.CONFLICT, "이미 선택했던 질문입니다."),
-    ALREADY_ANSWER(HttpStatus.CONFLICT, "질문에 이미 답변을 작성했습니다.");
+    ALREADY_ANSWER(HttpStatus.CONFLICT, "질문에 이미 답변을 작성했습니다."),
+
+    /* 401 */
+    UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED,"잘못된 JWT 토큰 입니다. 토큰이 비어있을 수 있으니 확인해주세요."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"만료된 JWT token 입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"유효하지 않는 JWT 서명 입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED,"지원되지 않는 JWT 토큰 입니다.");
+
 
     private final HttpStatus status;
     private final String message;
