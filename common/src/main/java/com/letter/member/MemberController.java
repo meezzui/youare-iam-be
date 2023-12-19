@@ -1,5 +1,6 @@
 package com.letter.member;
 
+import com.letter.annotation.LoginCheck;
 import com.letter.member.dto.MemberRequest;
 import com.letter.member.dto.MemberResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ public class MemberController {
     @ApiResponses(value ={
             @ApiResponse(responseCode= "201",description = "초대 링크 키 생성 완료")
     })
+    @LoginCheck
     @PostMapping("/link")
     public ResponseEntity<MemberResponse.CreateInviteLinkResponse> createInviteLink(@RequestBody @Valid MemberRequest.CreateInviteLinkRequest request){
         // TODO: 사용자 인증
@@ -34,6 +36,7 @@ public class MemberController {
     @ApiResponses(value ={
             @ApiResponse(responseCode= "201",description = "초대 수락 완료")
     })
+    @LoginCheck
     @PostMapping("/accept")
     public ResponseEntity<MemberResponse.AcceptInviteLinkResponse> acceptedInvite(@RequestBody @Valid MemberRequest.AcceptInviteLinkRequest request){
         // TODO: 사용자 인증
@@ -45,6 +48,7 @@ public class MemberController {
     @ApiResponses(value ={
             @ApiResponse(responseCode= "200",description = "정보 가져오기 완료")
     })
+    @LoginCheck
     @GetMapping ("/info")
     public ResponseEntity<MemberResponse.InvitedPersonInfoResponse> getInvitedPersonInfo(@Valid MemberRequest.InvitedPersonInfoRequest request){
         // TODO: 사용자 인증

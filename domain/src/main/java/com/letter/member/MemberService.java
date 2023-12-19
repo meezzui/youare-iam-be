@@ -1,5 +1,6 @@
 package com.letter.member;
 
+import com.letter.jwt.JwtProvider;
 import com.letter.member.dto.MemberRequest;
 import com.letter.member.dto.MemberResponse;
 import com.letter.member.entity.Couple;
@@ -33,6 +34,8 @@ public class MemberService {
     private final InviteOpponentRepository inviteOpponentRepository;
     private final AnswerRepository answerRepository;
     private final SelectQuestionRepository selectQuestionRepository;
+
+    private final JwtProvider jwtProvider;
 
 
     /**
@@ -76,6 +79,7 @@ public class MemberService {
      * @return
      */
     public MemberResponse.AcceptInviteLinkResponse acceptedInvite(MemberRequest.AcceptInviteLinkRequest request) {
+
 
         // TODO: 토큰에서 회원 아이디 가져와서 셋팅하기
         // 회원 아이디 조회
