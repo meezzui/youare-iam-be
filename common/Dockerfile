@@ -1,6 +1,6 @@
 FROM azul/zulu-openjdk:17
 
-ARG JAR_FILE=common/build/libs/*.jar
+ARG JAR_FILE=/build/libs/*.jar
 
 COPY ${JAR_FILE} common.jar
 
