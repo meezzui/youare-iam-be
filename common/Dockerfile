@@ -1,4 +1,4 @@
-FROM adoptopenjdk:17-jdk-hotspot
+FROM azul/zulu-openjdk:17
 
 ARG JAR_FILE=common/build/libs/*.jar
 
