@@ -59,9 +59,9 @@ jobs:
       - name: Generate deployment package
         run: |
           cd /
-          sudo mkdir -p deploy
-          cp -r .ebextensions /deploy/.ebextensions
-          cp Dockerrun.aws.json /deploy/Dockerrun.aws.json
+          sudo mkdir /deploy
+          cp -r .ebextensions deploy/.ebextensions
+          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
