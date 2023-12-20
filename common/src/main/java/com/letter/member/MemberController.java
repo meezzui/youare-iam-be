@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/members/invite")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -27,7 +29,6 @@ public class MemberController {
     @LoginCheck
     @PostMapping("/link")
     public ResponseEntity<MemberResponse.CreateInviteLinkResponse> createInviteLink(@RequestBody @Valid MemberRequest.CreateInviteLinkRequest request){
-        // TODO: 사용자 인증
 
         return ResponseEntity.ok().body(memberService.createInviteLink(request));
     }
@@ -39,7 +40,6 @@ public class MemberController {
     @LoginCheck
     @PostMapping("/accept")
     public ResponseEntity<MemberResponse.AcceptInviteLinkResponse> acceptedInvite(@RequestBody @Valid MemberRequest.AcceptInviteLinkRequest request){
-        // TODO: 사용자 인증
 
         return ResponseEntity.ok().body(memberService.acceptedInvite(request));
     }
@@ -48,11 +48,9 @@ public class MemberController {
     @ApiResponses(value ={
             @ApiResponse(responseCode= "200",description = "정보 가져오기 완료")
     })
-    @LoginCheck
-    @GetMapping ("/info")
-    public ResponseEntity<MemberResponse.InvitedPersonInfoResponse> getInvitedPersonInfo(@Valid MemberRequest.InvitedPersonInfoRequest request){
-        // TODO: 사용자 인증
+    @GetMapping ("/info/{linkKey}")
+    public ResponseEntity<MemberResponse.InvitedPersonInfoResponse> getInvitedPersonInfo(@PathVariable("linkKey") String linkKey){
 
-        return ResponseEntity.ok().body(memberService.getInvitedPersonInfo(request));
+        return ResponseEntity.ok().body(memberService.getInvitedPersonInfo(linkKey));
     }
 }
