@@ -1,6 +1,7 @@
 dependencies {
     implementation project(':domain') // domain 모듈 의존성 추가
     implementation project(path: ':storage')
+    implementation 'com.coveo:spring-boot-parameter-store-integration:1.1.2'
 }
 
 tasks.named('bootJar'){ // bootJar 세팅을 켜기

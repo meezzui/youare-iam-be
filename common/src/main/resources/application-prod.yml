@@ -1,0 +1,12 @@
+server:
+  port: 5000
+
+awsParameterStorePropertySource:
+  enabled: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${/yi/rds/hostname}:3306/${/yi/rds/dbname}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${/yi/rds/username}
+    password: ${/yi/rds/password}
