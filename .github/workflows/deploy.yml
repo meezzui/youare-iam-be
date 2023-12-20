@@ -44,7 +44,9 @@ jobs:
           ECR_REPOSITORY: youare-iam-server
           IMAGE_TAG: latest
         run: |
+          pwd
           cd common/
+          pwd
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
@@ -59,7 +61,9 @@ jobs:
       - name: Generate deployment package
         run: |
           cd ../
+          pwd
           sudo mkdir deploy
+          ls
           cp -r .ebextensions deploy/.ebextensions
           cp Dockerrun.aws.json deploy/Dockerrun.aws.json
           cd deploy && zip -r deploy.zip .
