@@ -21,30 +21,48 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     // 질문 리스트 조회
-    public List<QuestionResponse.QuestionList> findAll() {
+    public List<QuestionResponse.QuestionList> findAllByCouple(Couple couple) {
         return jpaQueryFactory
                 .select(Projections.bean(QuestionResponse.QuestionList.class,
                         question.id.as("questionId"),
                         question.questionContents.as("question")))
                 .from(question)
-                .where(question.isShow.eq("Y"))
+                .leftJoin(selectQuestion)
+                    .on(selectQuestion.couple.eq(couple), selectQuestion.question.eq(question))
+                .where(selectQuestion.id.isNull(), question.isShow.eq("Y"))
                 .fetch();
     }
 
     public List<LetterDetailResponse> findAllByCoupleAndNextCursor(Couple couple, int nextCursor) {
-        return jpaQueryFactory
-                .select(Projections.bean(LetterDetailResponse.class,
-                        selectQuestion.id.as("selectQuestionId"),
-                        question.questionContents.as("question"),
-                        selectQuestion.createdAt))
-                .from(selectQuestion)
-                .leftJoin(question)
-                .on(selectQuestion.question.id.eq(question.id),
-                        question.isShow.eq("Y"))
-                .where(selectQuestion.id.loe(nextCursor), selectQuestion.couple.eq(couple), selectQuestion.isShow.eq("Y"))
-                .orderBy(selectQuestion.id.desc())
-                .limit(26)
-                .fetch();
+        if (nextCursor == 1) {
+            return jpaQueryFactory
+                    .select(Projections.bean(LetterDetailResponse.class,
+                            selectQuestion.id.as("selectQuestionId"),
+                            question.questionContents.as("question"),
+                            selectQuestion.createdAt))
+                    .from(selectQuestion)
+                    .leftJoin(question)
+                    .on(selectQuestion.question.id.eq(question.id),
+                            question.isShow.eq("Y"))
+                    .where(selectQuestion.couple.eq(couple), selectQuestion.isShow.eq("Y"))
+                    .orderBy(selectQuestion.id.desc())
+                    .limit(26)
+                    .fetch();
+        } else {
+            return jpaQueryFactory
+                    .select(Projections.bean(LetterDetailResponse.class,
+                            selectQuestion.id.as("selectQuestionId"),
+                            question.questionContents.as("question"),
+                            selectQuestion.createdAt))
+                    .from(selectQuestion)
+                    .leftJoin(question)
+                    .on(selectQuestion.question.id.eq(question.id),
+                            question.isShow.eq("Y"))
+                    .where(selectQuestion.id.loe(nextCursor), selectQuestion.couple.eq(couple), selectQuestion.isShow.eq("Y"))
+                    .orderBy(selectQuestion.id.desc())
+                    .limit(26)
+                    .fetch();
+        }
     }
 
 }
