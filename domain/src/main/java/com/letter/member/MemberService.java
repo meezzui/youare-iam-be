@@ -1,5 +1,7 @@
 package com.letter.member;
 
+import com.letter.exception.CustomException;
+import com.letter.exception.ErrorCode;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.dto.MemberRequest;
 import com.letter.member.dto.MemberResponse;
@@ -36,7 +38,7 @@ public class MemberService {
     private final SelectQuestionRepository selectQuestionRepository;
 
     private final JwtProvider jwtProvider;
-
+    private final InviteOpponentCustomRepositoryImpl inviteOpponentCustomRepository;
 
     /**
      * 상대 초대 링크 생성 api
@@ -120,25 +122,25 @@ public class MemberService {
     /**
      * 초대 링크로 랜딩되는 페이지 관련 API
      *
-     * @param request
+     * @param linkKey
      * @return
      */
-    public MemberResponse.InvitedPersonInfoResponse getInvitedPersonInfo(MemberRequest.InvitedPersonInfoRequest request) {
+    public MemberResponse.InvitedPersonInfoResponse getInvitedPersonInfo(String linkKey) {
 
         // 상대 테이블에서 링크 고유 값으로 회원 조회
-        InviteOpponent inviteOpponent = inviteOpponentRepository.findQuestionByLinkKey(request.getLinkKey()).orElseThrow(
-                () -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
+        InviteOpponent inviteOpponent = inviteOpponentRepository.findQuestionByLinkKey(linkKey).orElseThrow(
+                () -> new CustomException(ErrorCode.BAD_REQUEST)
         );
 
         // 회원 이름
         String name = inviteOpponent.getMember().getName();
 
         // 선택된 질문 아이디
-        List<SelectQuestion> selectedQuestion = inviteOpponent.getQuestion().getSelectQuestions();
+        Long selectedQuestionId = inviteOpponentCustomRepository.findSelectedQuestionIdByLinkKey(linkKey);
 
         return MemberResponse.InvitedPersonInfoResponse.builder()
                 .invitedPersonName(name)
-                .selectedQuestionId(selectedQuestion.stream().map(SelectQuestion::getId).collect(Collectors.toList()))
+                .selectedQuestionId(selectedQuestionId)
                 .build();
     }
 }

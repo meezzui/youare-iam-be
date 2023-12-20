@@ -21,8 +21,10 @@ public enum ErrorCode {
     UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED,"잘못된 JWT 토큰 입니다. 토큰이 비어있을 수 있으니 확인해주세요."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"만료된 JWT token 입니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"유효하지 않는 JWT 서명 입니다."),
-    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED,"지원되지 않는 JWT 토큰 입니다.");
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED,"지원되지 않는 JWT 토큰 입니다."),
 
+    /* 400 */
+    BAD_REQUEST(HttpStatus.BAD_REQUEST,"잘못된 요청값 입니다. 다시 확인해주새요.");
 
     private final HttpStatus status;
     private final String message;

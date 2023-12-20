@@ -30,8 +30,13 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         if(!(handler instanceof HandlerMethod)) return true;
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
+        LoginCheck loginCheck = handlerMethod.getMethodAnnotation(LoginCheck.class);
 
-        if (request.getRequestURI().contains("/api")&& handler instanceof HandlerMethod) {
+        if (request.getRequestURI().contains("/api") && loginCheck == null) {
+            //&& handler instanceof HandlerMethod
+            return true;
+        }
+        else if(request.getRequestURI().contains("/api") && loginCheck != null) {
 
             String token = jwtProvider.bringToken(request);
             jwtProvider.validateToken(token, SECRET);
