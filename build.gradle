@@ -25,6 +25,8 @@ allprojects {
 
 }
 
+bootJar.enabled = false
+
 subprojects { // 각 모듈에 적용할 공통 설정
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
@@ -54,28 +56,7 @@ subprojects { // 각 모듈에 적용할 공통 설정
         implementation 'com.auth0:java-jwt:4.0.0'
     }
 
-    tasks.named('bootJar') { //빌드할 때 bootjar 파일로 하겠다는 의미
-        enabled = true
-    }
-
-    tasks.named('jar') { //빌드할 때 jar 파일로 하겠다는 의미
-        enabled = false
-    }
-
     tasks.named('test') {
         useJUnitPlatform()
     }
 }
-
-//dependencies {
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.springframework.boot:spring-boot-starter-web'
-//    compileOnly 'org.projectlombok:lombok'
-//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//    runtimeOnly 'com.mysql:mysql-connector-j'
-//    annotationProcessor 'org.projectlombok:lombok'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//}
-
-
-
