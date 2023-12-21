@@ -1,5 +1,6 @@
 package com.letter.question.entity;
 
+import com.letter.member.entity.Couple;
 import com.letter.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +31,11 @@ public class Answer {
     @Column(name = "ANS_ID", nullable = false)
     private Long id;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "CP_ID", nullable = false)
+    private Couple couple;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MBR_ID")
     private Member member;
@@ -58,7 +64,8 @@ public class Answer {
     @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
-    public Answer(Member member, SelectQuestion selectQuestion, String answerContents) {
+    public Answer(Couple couple, Member member, SelectQuestion selectQuestion, String answerContents) {
+        this.couple = couple;
         this.member = member;
         this.selectQuestion = selectQuestion;
         this.answerContents = answerContents;
