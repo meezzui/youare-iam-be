@@ -1,5 +1,6 @@
 package com.letter.member.entity;
 
+import com.letter.question.entity.Answer;
 import com.letter.question.entity.SelectQuestion;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -41,5 +42,8 @@ public class Couple {
 
     @OneToMany(mappedBy = "couple", fetch = FetchType.LAZY)
     private List<Member> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "couple")
+    private List<Answer> answers = new ArrayList<>();
 
 }
