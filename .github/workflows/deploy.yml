@@ -58,6 +58,13 @@ jobs:
           format: YYYYMMDD_HH-mm-ss
           utcOffset: "+09:00"
 
+      - name: create-json
+        uses: jsdaniell/create-json@1.1.2
+        id: create-json
+        with:
+          name: "Dockerrun.aws.json"
+          json: ${{ secrets.DOCKERRUN_AWS_JSON }}
+
       - name: Generate deployment package
         run: |
           mkdir deploy
