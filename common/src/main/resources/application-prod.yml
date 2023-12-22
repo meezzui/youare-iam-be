@@ -1,18 +1,12 @@
 server:
-  port: 8080
+  port: 8081
+
+awsParameterStorePropertySource:
+  enabled: true
 
 spring:
-  config:
-    import: 'aws-parameterstore:'
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${rds/hostname}:3306/${rds/dbname}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ${rds/username}
-    password: ${rds/password}
-
-aws:
-  paramstore:
-    enabled: true
-    prefix: /yi
-    region: ap-northeast-2
-    profile-separator: _
+    url: jdbc:mysql://${/yi/server_prod/db.hostname}:3306/${/yi/server_prod/db.name}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${/yi/server_prod/db.username}
+    password: ${/yi/server_prod/db.password}
