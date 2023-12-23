@@ -33,7 +33,7 @@ public class InviteOpponent {
     private Member member;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne( optional = false)
     @JoinColumn(name = "QSTN_ID", nullable = false)
     private Question question;
 

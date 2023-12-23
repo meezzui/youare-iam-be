@@ -31,3 +31,6 @@ springdoc:
   default-produces-media-type: application/json
   paths-to-match:
     - /api/**
+
+user:
+  id: "2023121300004"

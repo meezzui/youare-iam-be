@@ -1,6 +1,7 @@
 package com.letter.question;
 
 import com.letter.question.dto.AnswerRequest;
+import com.letter.question.dto.QuestionContentsResponse;
 import com.letter.question.service.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,10 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Answer Controller", description = "답변 관련 컨트롤러")
 @RestController
@@ -20,6 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnswerController {
 
     private final AnswerService answerService;
+
+    @Operation(summary = "답변 등록 렌더링 관련 데이터 조회", description = "query string으로 selectedQuestionId를 받아서 question 응답하는 API")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "조회 성공"
+                    )
+            }
+    )
+    @GetMapping("/answer")
+    public ResponseEntity<QuestionContentsResponse> getAnswersQuestion(@RequestParam(name = "selected-question-id") Long selectedQuestionId) {
+        return answerService.getAnswersQuestion(selectedQuestionId);
+    }
 
     @Operation(summary = "답변 등록", description = "Request body로 선택 질문 id와 그 질문의 답변을 받아 등록하는 API")
     @ApiResponses(

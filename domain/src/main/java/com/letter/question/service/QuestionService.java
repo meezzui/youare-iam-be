@@ -12,6 +12,7 @@ import com.letter.question.entity.SelectQuestion;
 import com.letter.question.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,12 @@ public class QuestionService {
     private final SelectQuestionRepository selectQuestionRepository;
     private final AnswerCustomRepositoryImpl answerCustomRepository;
 
+    @Value("${user.id}")
+    private String userId;
+
     public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList() {
         // TODO 사용자 인증 추가
-        final Member member = memberRepository.findById("2023121300004").orElseThrow(
+        final Member member = memberRepository.findById(userId).orElseThrow(
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
@@ -48,7 +52,7 @@ public class QuestionService {
     public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
         Long selectedQuestion = null;
 
-        final Member member = memberRepository.findById("2023121300004").orElseThrow(
+        final Member member = memberRepository.findById(userId).orElseThrow(
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
@@ -93,7 +97,7 @@ public class QuestionService {
     }
 
     public ResponseEntity<LetterPaginationDto> getLetterList(int nextCursor) {
-        final Member member = memberRepository.findById("2023121300004").orElseThrow(
+        final Member member = memberRepository.findById(userId).orElseThrow(
                 () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
         );
 
@@ -115,7 +119,7 @@ public class QuestionService {
             return ResponseEntity.ok(null);
         }
 
-        final List<DetailAnswerDto> databaseDetailAnswerDtoList = answerCustomRepository.findAllBySelectQuestionId(letterDetailResponses.get(0).getSelectQuestionId());
+        final List<DetailAnswerDto> databaseDetailAnswerDtoList = answerCustomRepository.findAllBySelectQuestionIdAndCouple(letterDetailResponses.get(0).getSelectQuestionId(), couple);
         Collections.reverse(letterDetailResponses);
 
         final HashMap<Long, List<DetailAnswerDto>> letterDetailHashmap = new HashMap<>();

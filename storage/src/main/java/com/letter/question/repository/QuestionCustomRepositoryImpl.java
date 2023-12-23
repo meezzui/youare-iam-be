@@ -2,6 +2,7 @@ package com.letter.question.repository;
 
 import com.letter.member.entity.Couple;
 import com.letter.question.dto.LetterDetailResponse;
+import com.letter.question.dto.QuestionContentsResponse;
 import com.letter.question.dto.QuestionResponse;
 
 import static com.letter.question.entity.QQuestion.question;
@@ -28,7 +29,7 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                         question.questionContents.as("question")))
                 .from(question)
                 .leftJoin(selectQuestion)
-                    .on(selectQuestion.couple.eq(couple), selectQuestion.question.eq(question))
+                .on(selectQuestion.couple.eq(couple), selectQuestion.question.eq(question))
                 .where(selectQuestion.id.isNull(), question.isShow.eq("Y"))
                 .fetch();
     }
@@ -63,6 +64,20 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                     .limit(26)
                     .fetch();
         }
+    }
+
+    public QuestionContentsResponse findQuestionContentsBySelectQuestionIdAndCouple(Long selectQuestionId, Couple couple) {
+        return jpaQueryFactory
+                .select(Projections.bean(QuestionContentsResponse.class,
+                        question.questionContents.as("question")))
+                .from(selectQuestion)
+                .leftJoin(question)
+                .on(selectQuestion.question.eq(question),
+                        question.isShow.eq("Y"))
+                .where(selectQuestion.id.eq(selectQuestionId),
+                        selectQuestion.couple.eq(couple),
+                        selectQuestion.isShow.eq("Y"))
+                .fetchOne();
     }
 
 }
