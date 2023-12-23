@@ -1,0 +1,13 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "{AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-2.amazonaws.com/{REPOSITORY_NAME}:{TAG_NAME}",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "8080",
+      "HostPort": "80"
+    }
+  ]
+}
