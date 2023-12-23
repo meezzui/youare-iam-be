@@ -1,8 +1,10 @@
 package com.letter.member;
 
 import com.letter.annotation.LoginCheck;
+import com.letter.annotation.User;
 import com.letter.member.dto.MemberRequest;
 import com.letter.member.dto.MemberResponse;
+import com.letter.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,9 +30,9 @@ public class MemberController {
     })
     @LoginCheck
     @PostMapping("/link")
-    public ResponseEntity<MemberResponse.CreateInviteLinkResponse> createInviteLink(@RequestBody @Valid MemberRequest.CreateInviteLinkRequest request){
+    public ResponseEntity<MemberResponse.CreateInviteLinkResponse> createInviteLink(@RequestBody @Valid MemberRequest.CreateInviteLinkRequest request, @User Member member){
 
-        return ResponseEntity.ok().body(memberService.createInviteLink(request));
+        return ResponseEntity.ok().body(memberService.createInviteLink(request,member));
     }
 
     @Operation(summary = "초대 수락 API")
@@ -39,9 +41,9 @@ public class MemberController {
     })
     @LoginCheck
     @PostMapping("/accept")
-    public ResponseEntity<MemberResponse.AcceptInviteLinkResponse> acceptedInvite(@RequestBody @Valid MemberRequest.AcceptInviteLinkRequest request){
+    public ResponseEntity<MemberResponse.AcceptInviteLinkResponse> acceptedInvite(@RequestBody @Valid MemberRequest.AcceptInviteLinkRequest request, @User Member member){
 
-        return ResponseEntity.ok().body(memberService.acceptedInvite(request));
+        return ResponseEntity.ok().body(memberService.acceptedInvite(request,member));
     }
 
     @Operation(summary = "초대 링크로 랜딩되는 페이지 API")

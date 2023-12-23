@@ -43,7 +43,7 @@ public class MemberResponse {
             @ApiResponse(description = "초대 링크로 랜딩되는 페이지 관련 response")
     })
     public static class InvitedPersonInfoResponse{
-        private Long selectedQuestionId;
+        private String question;
         private String invitedPersonName;
     }
 

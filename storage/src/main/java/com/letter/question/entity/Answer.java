@@ -1,5 +1,6 @@
 package com.letter.question.entity;
 
+import com.letter.member.entity.Couple;
 import com.letter.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,11 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ANS_ID", nullable = false)
     private Long id;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "CP_ID", nullable = false)
+    private Couple couple;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MBR_ID")
