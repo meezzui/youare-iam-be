@@ -5,6 +5,7 @@ import com.letter.jwt.JwtProperties;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.dto.OAuthResponse;
 import com.letter.member.entity.Member;
+import com.letter.member.repository.MemberCustomRepositoryImpl;
 import com.letter.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class OAuthService {
 
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
+    private final MemberCustomRepositoryImpl memberCustomRepository;
 
     /**
      * 카카오 사용자 회원정보 담긴 것 가져오기
@@ -37,33 +39,42 @@ public class OAuthService {
      */
     @Transactional
     public ResponseEntity getOAuthInfo(String code){
+
         // dto에 담은 사용자 정보 가져오기
         OAuthResponse userInfo = getKakaoUserInfo(code);
-        // 이메일과 미디어 구분으로 디비에 해당 회원 정보가 있는지 조회
-        // TODO: findByAndEmailAndMediaSeparator -> findByEmailAndMediaSeparator 로 이름 수정하기
-        Optional<Member> member = memberRepository.findByAndEmailAndMediaSeparator(userInfo.getEmail(), "kakao");
+
+        // 카카오 아이디로 디비에 해당 회원 정보가 있는지 조회
+        String userId = memberCustomRepository.findIdByKakaId(userInfo.getId());
+
+        String memberId = "";
 
         // 회원 정보가 있으면 디비에 저장없이 토큰 발급
         // 회원 정보가 없으면 정보를 디비에 저장하고 토큰 발급
-        if(member.isEmpty()){
-            // 총 회원 수 + 1
+        if(userId != null){
+            // 회원 테이블에 저장된 회원 아이디 가져오기
+            memberId = userId;
+        }
+
+        if(userId == null){
+            // 총 회원 수 + 1(회원 아이디 만드는데 사용)
             Long memberCount = memberRepository.countAllBy() + 1;
             //디비에 회원 정보 저장(회원 아이디,이메일,이름,미디어 구분 값,리프레쉬 토큰)
             // Member 엔티티에 값 셋팅
             Member mbrEntity = new Member();
             mbrEntity.saveUserInfo(userInfo, memberCount);
             // 디비에 저장
-            memberRepository.save(mbrEntity);
+            Member insertMember = memberRepository.save(mbrEntity);
+
+            // 저장된 회원 아이디 가져와서 memberId에 담아주기
+            memberId = insertMember.getId();
         }
 
-        // 회원 테이블에 저장된 회원 아이디 가져오기
-        String memberId = member.get().getId();
         // jwt 토큰 생성
         String jwtToken = jwtProvider.createJwtToken(memberId,userInfo);
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProperties.HEADER_STRING,JwtProperties.TOKEN_PREFIX + jwtToken);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(null);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(jwtToken);
     }
 
 
@@ -100,9 +111,11 @@ public class OAuthService {
             System.out.println("responseCode : " + responseCode);
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(responseCode == 200 ? conn.getInputStream() : conn.getErrorStream()));
             String line = "";
             String result = "";
+
+
 
             while ((line = br.readLine()) != null) {
                 result += line;
@@ -141,6 +154,7 @@ public class OAuthService {
         String reqURL = "https://kapi.kakao.com/v2/user/me"; // 카카오에서 정보를 가져오기 위한 url
         String email = "";
         String nickname = "";
+        Long id = 0L;
         //access_token을 이용하여 사용자 정보 조회
         try {
             URL url = new URL(reqURL);
@@ -179,8 +193,12 @@ public class OAuthService {
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             }
 
+            // 카카오 아이디
+            id = element.getAsJsonObject().get("id").getAsLong();
+
             System.out.println("nickname : " + nickname);
             System.out.println("email : " + email);
+            System.out.println("id : " + id);
 
             br.close();
 
@@ -191,6 +209,7 @@ public class OAuthService {
         return OAuthResponse.builder()
                 .nickname(nickname)
                 .email(email)
+                .id(id)
                 .build();
     }
 
