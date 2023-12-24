@@ -22,6 +22,7 @@ public class MemberResponse {
     public static class CreateInviteLinkResponse{
         private String linkKey;
         private String question;
+        private String invitedPersonName;
     }
 
     @RequiredArgsConstructor
