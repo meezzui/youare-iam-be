@@ -58,6 +58,7 @@ public class MemberRequest {
         public Answer toAnswerInfo(Member member, SelectQuestion selectQuestion, String answer) {
             return Answer.builder()
                     .member(member)
+                    .couple(selectQuestion.getCouple())
                     .selectQuestion(selectQuestion)
                     .answerContents(answer)
                     .isShow("Y")
