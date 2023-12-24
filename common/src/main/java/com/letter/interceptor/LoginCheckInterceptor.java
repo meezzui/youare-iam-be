@@ -1,7 +1,6 @@
 package com.letter.interceptor;
 
 import com.letter.annotation.LoginCheck;
-import static com.letter.jwt.JwtProperties.*;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.MemberRepository;
@@ -39,8 +38,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         else if(request.getRequestURI().contains("/api") && loginCheck != null) {
 
             String token = jwtProvider.bringToken(request);
-            jwtProvider.validateToken(token, SECRET);
-            String memberId = jwtProvider.getUserInfoFromToken(token, SECRET);
+            jwtProvider.validateToken(token);
+            String memberId = jwtProvider.getUserInfoFromToken(token);
             final Optional<Member> member = memberRepository.findById(memberId);
 
             if (handlerMethod.hasMethodAnnotation(LoginCheck.class) && member.isEmpty()) { //실행하고자 하는 Controller method의 어노테이션 중 LoginCheck가 있는지 체크

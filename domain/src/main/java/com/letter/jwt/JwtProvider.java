@@ -7,8 +7,8 @@ import com.letter.exception.ErrorCode;
 import com.letter.member.dto.OAuthResponse;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -17,9 +17,15 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class JwtProvider {
     private static final Long refreshTokenValidTime = Duration.ofDays(14).toMillis(); // 만료시간 2주
+
+    @Value("${jwt.secret}")
+    private String SECRET;
+
+    public String getSECRET() {
+        return SECRET;
+    }
 
     /**
      * jwt 토큰 생성하기
@@ -33,7 +39,7 @@ public class JwtProvider {
                 .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME)) //JwtProperties 의 만료 시간 필드를 불러와 넣어준다.
                 .withClaim("nickname", userInfo.getNickname()) // Payload 에 들어갈 개인 클레임 을 설정한다.
                 // .withClaim(이름, 내용) 형태로 작성한다. 사용자를 식별할 수 있는 값과, 따로 추가하고 싶은 값을 자유롭게 넣는다.
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); // 사용할 암호화 알고리즘과 secret 값 셋팅
+                .sign(Algorithm.HMAC512(SECRET)); // 사용할 암호화 알고리즘과 secret 값 셋팅
         return jwtToken;
     }
 
@@ -55,10 +61,10 @@ public class JwtProvider {
      * @param token
      * @return
      */
-    public boolean validateToken(String token, String secretKey) {
+    public boolean validateToken(String token) {
 
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(SECRET.getBytes()).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -80,9 +86,9 @@ public class JwtProvider {
      * @param token
      * @return
      */
-    public String getUserInfoFromToken(String token, String secretKey) {
+    public String getUserInfoFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(secretKey.getBytes())
+                .setSigningKey(SECRET.getBytes())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
