@@ -1,2 +1,6 @@
+awsParameterStorePropertySource:
+  enabled: true
 
+jwt:
+  secret: ${/yi/server/jwt.secret}
 
