@@ -3,7 +3,6 @@ package com.letter.interceptor;
 import com.letter.annotation.User;
 import com.letter.exception.CustomException;
 import com.letter.exception.ErrorCode;
-import com.letter.jwt.JwtProperties;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.MemberRepository;
@@ -46,8 +45,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         String token = webRequest.getHeader("Authorization").substring(7);
         log.info("토큰 확인!! {}",token);
 
-        jwtProvider.validateToken(token, JwtProperties.SECRET);
-        String memberId = jwtProvider.getUserInfoFromToken(token, JwtProperties.SECRET);
+        jwtProvider.validateToken(token);
+        String memberId = jwtProvider.getUserInfoFromToken(token);
         final Optional<Member> member = memberRepository.findById(memberId);
         if(member.isEmpty()){
             throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
