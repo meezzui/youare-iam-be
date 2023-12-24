@@ -3,10 +3,10 @@ package com.letter.interceptor;
 import com.letter.annotation.User;
 import com.letter.exception.CustomException;
 import com.letter.exception.ErrorCode;
+import com.letter.jwt.JwtProperties;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.MemberRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -17,8 +17,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Optional;
-
-import static com.letter.jwt.JwtProperties.SECRET;
 
 @Component
 @RequiredArgsConstructor
@@ -48,8 +46,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         String token = webRequest.getHeader("Authorization").substring(7);
         log.info("토큰 확인!! {}",token);
 
-        jwtProvider.validateToken(token, SECRET);
-        String memberId = jwtProvider.getUserInfoFromToken(token, SECRET);
+        jwtProvider.validateToken(token, JwtProperties.SECRET);
+        String memberId = jwtProvider.getUserInfoFromToken(token, JwtProperties.SECRET);
         final Optional<Member> member = memberRepository.findById(memberId);
         if(member.isEmpty()){
             throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);

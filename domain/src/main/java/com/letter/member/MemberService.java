@@ -13,7 +13,6 @@ import com.letter.question.entity.Answer;
 import com.letter.question.entity.Question;
 import com.letter.question.entity.SelectQuestion;
 import com.letter.question.repository.AnswerRepository;
-import com.letter.question.repository.QuestionCustomRepositoryImpl;
 import com.letter.question.repository.QuestionRepository;
 import com.letter.question.repository.SelectQuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -64,9 +61,11 @@ public class MemberService {
         // 상대 초대 테이블에 정보 등록
         inviteOpponentRepository.save(inviteOpponent);
 
+
         return MemberResponse.CreateInviteLinkResponse.builder()
                 .linkKey(uuid)
                 .question(question.getQuestionContents())
+                .invitedPersonName(member.getName())
                 .build();
     }
 

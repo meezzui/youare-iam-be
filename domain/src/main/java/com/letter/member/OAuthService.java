@@ -19,14 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Optional;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
-
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final MemberCustomRepositoryImpl memberCustomRepository;
@@ -73,7 +71,7 @@ public class OAuthService {
         String jwtToken = jwtProvider.createJwtToken(memberId,userInfo);
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
-        headers.add(JwtProperties.HEADER_STRING,JwtProperties.TOKEN_PREFIX + jwtToken);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(jwtToken);
     }
 
@@ -101,7 +99,7 @@ public class OAuthService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=8a4726cfed8673405f24582af1d2ff15"); // REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:8080/api/v1/members/kakao/callback"); // 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri=http://localhost:3000/login/kakao"); // 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();

@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Data
 public class MemberResponse {
 
@@ -22,6 +20,7 @@ public class MemberResponse {
     public static class CreateInviteLinkResponse{
         private String linkKey;
         private String question;
+        private String invitedPersonName;
     }
 
     @RequiredArgsConstructor

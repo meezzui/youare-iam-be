@@ -6,8 +6,6 @@ import com.letter.member.entity.Member;
 import com.letter.question.entity.Answer;
 import com.letter.question.entity.Question;
 import com.letter.question.entity.SelectQuestion;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.*;
 
 @Data
@@ -28,6 +26,7 @@ public class MemberRequest {
                     .member(member)
                     .answer(answer)
                     .linkKey(uuid)
+                    .isShow("Y")
                     .build();
         }
     }

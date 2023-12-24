@@ -2,24 +2,23 @@ package com.letter.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
 import com.letter.exception.CustomException;
 import com.letter.exception.ErrorCode;
 import com.letter.member.dto.OAuthResponse;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtProvider {
-
     private static final Long refreshTokenValidTime = Duration.ofDays(14).toMillis(); // 만료시간 2주
 
     /**
