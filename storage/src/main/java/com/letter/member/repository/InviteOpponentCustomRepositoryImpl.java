@@ -2,6 +2,7 @@ package com.letter.member.repository;
 
 import com.letter.member.entity.InviteOpponent;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,16 +17,29 @@ import static com.letter.question.entity.QQuestion.question;
 public class InviteOpponentCustomRepositoryImpl implements InviteOpponentCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final EntityManager entityManager;
 
-    public Long findSelectedQuestionIdByLinkKey(String linkKey) {
+    public String findSelectedQuestionIdByLinkKey(String linkKey) {
 
         return jpaQueryFactory
-                .select(selectQuestion.id)
+                .select(question.questionContents)
                 .from(inviteOpponent)
                 .leftJoin(question).on(inviteOpponent.question.id.eq(question.id))
-                .leftJoin(selectQuestion).on(question.id.eq(selectQuestion.question.id))
                 .where(inviteOpponent.linkKey.eq(linkKey))
                 .fetchOne();
+    }
+
+    public Long updateIsShow(String memberId){
+        Long updateIsShow = jpaQueryFactory
+                .update(inviteOpponent)
+                .set(inviteOpponent.isShow, "N")
+                .where(inviteOpponent.member.id.eq(memberId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        return updateIsShow;
     }
 
 }

@@ -12,6 +12,6 @@ import lombok.RequiredArgsConstructor;
 public class OAuthResponse {
     private String nickname;
     private String email;
-    private String jwtToken;
+    private Long id;
 
 }

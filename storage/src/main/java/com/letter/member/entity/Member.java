@@ -4,6 +4,7 @@ import com.letter.member.dto.OAuthResponse;
 import com.letter.question.entity.Answer;
 import com.letter.question.entity.RegisterQuestion;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -29,6 +30,10 @@ public class Member {
     @Size(max = 30)
     @Column(name = "MBR_ID", nullable = false, length = 30)
     private String id;
+
+    @Min(value = 0)
+    @Column(name = "KAKAO_ID", nullable = false)
+    private Long kakaoId;
 
     @Size(max = 100)
     @NotNull
@@ -83,6 +88,7 @@ public class Member {
         // 값 셋팅
         this.name = userInfo.getNickname();
         this.email = userInfo.getEmail();
+        this.kakaoId = userInfo.getId();
 
         // TODO 임시 값 변경
         this.mediaSeparator = "kakao";
