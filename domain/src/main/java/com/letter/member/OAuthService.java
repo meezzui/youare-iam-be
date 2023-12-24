@@ -19,14 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Optional;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
-
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final MemberCustomRepositoryImpl memberCustomRepository;
@@ -73,7 +71,7 @@ public class OAuthService {
         String jwtToken = jwtProvider.createJwtToken(memberId,userInfo);
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
-        headers.add(JwtProperties.HEADER_STRING,JwtProperties.TOKEN_PREFIX + jwtToken);
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(jwtToken);
     }
 
