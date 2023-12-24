@@ -64,9 +64,11 @@ public class MemberService {
         // 상대 초대 테이블에 정보 등록
         inviteOpponentRepository.save(inviteOpponent);
 
+
         return MemberResponse.CreateInviteLinkResponse.builder()
                 .linkKey(uuid)
                 .question(question.getQuestionContents())
+                .invitedPersonName(member.getName())
                 .build();
     }
 
