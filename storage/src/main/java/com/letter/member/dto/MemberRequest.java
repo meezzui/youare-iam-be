@@ -28,6 +28,7 @@ public class MemberRequest {
                     .member(member)
                     .answer(answer)
                     .linkKey(uuid)
+                    .isShow("Y")
                     .build();
         }
     }
