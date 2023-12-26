@@ -1,6 +1,18 @@
+awsParameterStorePropertySource:
+  enabled: true
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${/yi/server_prod/db.hostname}:3306/${/yi/server_prod/db.name}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${/yi/server_prod/db.username}
     password: ${/yi/server_prod/db.password}
+
+jwt:
+  secret: ${/yi/server_prod/jwt.secret}
+
+oauth:
+  client_id: ${/yi/server_prod/oauth/client.id}
+  redirect_uri: ${/yi/server_prod/oauth/redirect-uri}
+  client_secret: ${/yi/server_prod/oauth/client.secret}
+

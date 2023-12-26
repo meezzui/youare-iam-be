@@ -2,10 +2,14 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/YI?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
-#logging:
-#  level:
-#    org.hibernate.SQL: debug
+jwt:
+  secret: ${JWT_SECRET}
+
+oauth:
+  client_id: ${OAUTH_CLIENT_ID}
+  redirect_uri: ${OAUTH_REDIRECT_URI}
+  client_secret: ${OAUTH_CLIENT_SECRET}
 

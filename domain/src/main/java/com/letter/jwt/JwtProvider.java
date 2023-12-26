@@ -23,10 +23,9 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String SECRET;
 
-    public String getSECRET() {
-        return SECRET;
-    }
-
+    public static final long EXPIRATION_TIME =  30 * 60 * 1000L; // 유효시간은 30분
+    public static final String TOKEN_PREFIX = "Bearer "; // Bearer 뒤에 무조건 띄어쓰기 한번 해주기
+    public static final String HEADER_STRING = "Authorization"; // 해더에 Authorization 이라는 토큰을 넣어 줌
     /**
      * jwt 토큰 생성하기
      * @param userInfo
@@ -36,7 +35,7 @@ public class JwtProvider {
 
         String jwtToken = JWT.create()
                 .withSubject(memberId) // Payload 에 들어갈 등록된 클레임 을 설정한다.
-                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME)) //JwtProperties 의 만료 시간 필드를 불러와 넣어준다.
+                .withExpiresAt(new Date(System.currentTimeMillis()+ EXPIRATION_TIME)) //JwtProperties 의 만료 시간 필드를 불러와 넣어준다.
                 .withClaim("nickname", userInfo.getNickname()) // Payload 에 들어갈 개인 클레임 을 설정한다.
                 // .withClaim(이름, 내용) 형태로 작성한다. 사용자를 식별할 수 있는 값과, 따로 추가하고 싶은 값을 자유롭게 넣는다.
                 .sign(Algorithm.HMAC512(SECRET)); // 사용할 암호화 알고리즘과 secret 값 셋팅
@@ -49,8 +48,8 @@ public class JwtProvider {
      * @return
      */
     public String bringToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(JwtProperties.HEADER_STRING);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtProperties.TOKEN_PREFIX)) {
+        String bearerToken = request.getHeader(HEADER_STRING);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(7); // "Bearer " 을 제외한 토큰만 가져오기
         }
         return null;
