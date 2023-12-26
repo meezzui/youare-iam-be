@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
@@ -29,10 +31,12 @@ public class AnswerService {
 
     public ResponseEntity<QuestionContentsResponse> getAnswersQuestion(Long selectedQuestionId, Member member) {
 
-        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
-        if (couple == null) {
+        Optional<Couple> optionalCouple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+        if (optionalCouple.isEmpty()) {
             throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
         }
+
+        final Couple couple = optionalCouple.get();
 
         final QuestionContentsResponse questionContentsResponse = questionCustomRepository.findQuestionContentsBySelectQuestionIdAndCouple(selectedQuestionId, couple);
 
@@ -45,10 +49,12 @@ public class AnswerService {
 
     public ResponseEntity<?> registerAnswer(AnswerRequest answerRequest, Member member) {
 
-        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
-        if (couple == null) {
+        Optional<Couple> optionalCouple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+        if (optionalCouple.isEmpty()) {
             throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
         }
+
+        final Couple couple = optionalCouple.get();
 
         final SelectQuestion selectQuestion = selectQuestionRepository.findByIdAndCouple(answerRequest.getSelectQuestionId(), couple).orElseThrow(
                 () -> new CustomException(ErrorCode.SELECT_QUESTION_NOT_FOUND)

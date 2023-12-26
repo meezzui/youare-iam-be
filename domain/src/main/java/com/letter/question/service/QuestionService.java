@@ -5,6 +5,7 @@ import com.letter.exception.ErrorCode;
 import com.letter.member.entity.Couple;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.CoupleCustomRepositoryImpl;
+import com.letter.member.repository.MemberRepository;
 import com.letter.question.dto.*;
 import com.letter.question.entity.Question;
 import com.letter.question.entity.SelectQuestion;
@@ -22,6 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class QuestionService {
 
+    private final MemberRepository memberRepository;
     private final CoupleCustomRepositoryImpl coupleCustomRepository;
 
     private final QuestionRepository questionRepository;
@@ -30,13 +32,16 @@ public class QuestionService {
     private final AnswerCustomRepositoryImpl answerCustomRepository;
 
     public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList(Member member) {
+        final List<QuestionResponse.QuestionList> questionLists;
 
-        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
-        if (couple == null) {
-            throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
+        Optional<Couple> optionalCouple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+        if (optionalCouple.isEmpty()) {
+            questionLists = questionCustomRepository.findAll();
+        } else {
+            questionLists = questionCustomRepository.findAllByCouple(optionalCouple.get());
         }
 
-        return ResponseEntity.ok(questionCustomRepository.findAllByCouple(couple));
+        return ResponseEntity.ok(questionLists);
     }
 
     public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(
@@ -52,10 +57,12 @@ public class QuestionService {
                     () -> new CustomException(ErrorCode.QUESTION_NOT_FOUND)
             );
 
-            final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
-            if (couple == null) {
+            Optional<Couple> optionalCouple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+            if (optionalCouple.isEmpty()) {
                 throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
             }
+
+            final Couple couple = optionalCouple.get();
 
             final int countSelectQuestion = selectQuestionRepository.countByQuestionAndCouple(question, couple);
             if (countSelectQuestion == 1) {
@@ -86,10 +93,12 @@ public class QuestionService {
 
     public ResponseEntity<LetterPaginationDto> getLetterList(int nextCursor, Member member) {
 
-        final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
-        if (couple == null) {
+        Optional<Couple> optionalCouple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+        if (optionalCouple.isEmpty()) {
             throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
         }
+
+        final Couple couple = optionalCouple.get();
 
         final LetterPaginationDto letterPaginationDto = new LetterPaginationDto();
 
