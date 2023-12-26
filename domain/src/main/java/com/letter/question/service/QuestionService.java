@@ -5,14 +5,12 @@ import com.letter.exception.ErrorCode;
 import com.letter.member.entity.Couple;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.CoupleCustomRepositoryImpl;
-import com.letter.member.repository.MemberRepository;
 import com.letter.question.dto.*;
 import com.letter.question.entity.Question;
 import com.letter.question.entity.SelectQuestion;
 import com.letter.question.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class QuestionService {
 
-    private final MemberRepository memberRepository;
     private final CoupleCustomRepositoryImpl coupleCustomRepository;
 
     private final QuestionRepository questionRepository;
@@ -32,14 +29,7 @@ public class QuestionService {
     private final SelectQuestionRepository selectQuestionRepository;
     private final AnswerCustomRepositoryImpl answerCustomRepository;
 
-    @Value("${user.id}")
-    private String userId;
-
-    public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList() {
-        // TODO 사용자 인증 추가
-        final Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
-        );
+    public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList(Member member) {
 
         final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
         if (couple == null) {
@@ -49,12 +39,10 @@ public class QuestionService {
         return ResponseEntity.ok(questionCustomRepository.findAllByCouple(couple));
     }
 
-    public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
+    public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(
+            QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion,
+            Member member) {
         Long selectedQuestion = null;
-
-        final Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
-        );
 
         // 질문 프리셋에 있는 질문 등록
         if (selectOrRegisterQuestion.getQuestionId() != null) {
@@ -96,10 +84,7 @@ public class QuestionService {
         return selectQuestion.getId();
     }
 
-    public ResponseEntity<LetterPaginationDto> getLetterList(int nextCursor) {
-        final Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new RuntimeException(HttpStatus.UNAUTHORIZED.name())
-        );
+    public ResponseEntity<LetterPaginationDto> getLetterList(int nextCursor, Member member) {
 
         final Couple couple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
         if (couple == null) {
