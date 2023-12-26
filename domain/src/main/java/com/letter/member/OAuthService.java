@@ -1,7 +1,6 @@
 package com.letter.member;
 
 import com.google.gson.JsonElement;
-import com.letter.jwt.JwtProperties;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.dto.OAuthResponse;
 import com.letter.member.entity.Member;
@@ -10,6 +9,7 @@ import com.letter.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.google.gson.JsonParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +28,13 @@ public class OAuthService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final MemberCustomRepositoryImpl memberCustomRepository;
+
+    @Value("${oauth.client_id}")
+    private String client_id;
+    @Value("${oauth.redirect_uri}")
+    private String redirect_uri;
+    @Value("${oauth.client_secret}")
+    private String client_secret;
 
     /**
      * 카카오 사용자 회원정보 담긴 것 가져오기
@@ -71,7 +78,7 @@ public class OAuthService {
         String jwtToken = jwtProvider.createJwtToken(memberId,userInfo);
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
-        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+        headers.add(jwtProvider.HEADER_STRING, jwtProvider.TOKEN_PREFIX + jwtToken);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(jwtToken);
     }
 
@@ -83,6 +90,11 @@ public class OAuthService {
      * @return
      */
     public String getKakaoAccessToken (String code) {
+
+        log.info("client_id 확인!!! {}",client_id);
+        log.info("client_secret 확인!!! {}",client_secret);
+        log.info("redirect_uri 확인!!! {}",redirect_uri);
+
         String access_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
@@ -98,8 +110,9 @@ public class OAuthService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=8a4726cfed8673405f24582af1d2ff15"); // REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:3000/login/kakao"); // 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=" + client_id); // REST_API_KEY 입력
+            sb.append("&client_secret=" + client_secret); // 카카오에서 받은 client secret 키
+            sb.append("&redirect_uri="+ redirect_uri); // 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
