@@ -40,6 +40,3 @@ springdoc:
 
 jwt:
     secret: ${/yi/server/jwt.secret}
-
-user:
-  id: "2023121300004"
