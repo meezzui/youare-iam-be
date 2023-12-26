@@ -1,5 +1,8 @@
 package com.letter.question;
 
+import com.letter.annotation.LoginCheck;
+import com.letter.annotation.User;
+import com.letter.member.entity.Member;
 import com.letter.question.dto.*;
 import com.letter.question.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,9 +25,10 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
+    @LoginCheck
     @GetMapping("/questions")
-    public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList() {
-        return questionService.getQuestionList();
+    public ResponseEntity<List<QuestionResponse.QuestionList>> getQuestionList(@User Member member) {
+        return questionService.getQuestionList(member);
     }
 
     @Operation(summary = "질문 선택 or 등록", description = "Request body로 질문의 id(프리셋)를 받아서 등록하는 API")
@@ -37,9 +41,12 @@ public class QuestionController {
                     )
             }
     )
+    @LoginCheck
     @PostMapping("/questions")
-    public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(@RequestBody QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion) {
-        return questionService.selectOrRegisterQuestion(selectOrRegisterQuestion);
+    public ResponseEntity<QuestionResponse.SelectedQuestion> selectOrRegisterQuestion(
+            @RequestBody QuestionRequest.SelectOrRegisterQuestion selectOrRegisterQuestion,
+            @User Member member) {
+        return questionService.selectOrRegisterQuestion(selectOrRegisterQuestion, member);
     }
 
     @Operation(summary = "대화 상세 페이지 조회", description = "주고 받은 질문과 답변 조회 API")
@@ -52,13 +59,15 @@ public class QuestionController {
                     )
             }
     )
+    @LoginCheck
     @GetMapping("/letters")
     public ResponseEntity<LetterPaginationDto> getLetterList(
             @RequestParam(
                     name = "next-cursor",
                     required = false,
                     defaultValue = "1"
-            ) int nextCursor) {
-        return questionService.getLetterList(nextCursor);
+            ) int nextCursor,
+            @User Member member) {
+        return questionService.getLetterList(nextCursor, member);
     }
 }
