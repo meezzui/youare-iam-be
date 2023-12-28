@@ -21,9 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -47,6 +45,13 @@ public class MemberService {
      * @return
      */
     public MemberResponse.CreateInviteLinkResponse createInviteLink(MemberRequest.CreateInviteLinkRequest request, Member member) {
+
+        // 초대하는 사람이 커플인지 확인. 커플이면 링크 생성 불가
+        if(member.getCouple() != null && member.getCouple().getId() != null){
+            log.error("이미 커플이 된 회원입니다.");
+            throw new CustomException(ErrorCode.ALREADY_COUPLE);
+        }
+        // TODO:기존에 보낸 초대 링크가 있다면 초대 링크 키의 유효시간 체크. 링크 키가 생성된지 3일 이내 이면 초대 링크 생성 불가
 
         // 링크 고유 키 생성
         String uuid = UUID.randomUUID().toString();
@@ -116,11 +121,18 @@ public class MemberService {
         // 선택 질문 테이블에 정보 등록
         selectQuestionRepository.save(selectQuestion);
 
+        // 초대한 사람의 답변 등록일시는 초대 상대 테이블의 등록일시를 가져와서 저장.
+        // 초대된 사람의 답변 등록일시는 LocalDateTime.now() 로 저장
         // 답변 테이블에 정보 request 셋팅
-        Answer answer = request.toAnswerInfo(member, selectQuestion, request.getAnswer());
-
+        Answer answer1 = request.toInvitedPersonAnswerInfo(member, selectQuestion, request.getAnswer()); // 링크로 초대된 사람 답변
+        Answer answer2 = request.toInvitePersonAnswerInfo(inviteOpponent,selectQuestion); // 초대한 사람 답변
+        List<Answer> answers = new ArrayList<>();
+        answers.add(answer1);
+        answers.add(answer2);
         // 답변 테이블에 정보 등록
-        answerRepository.save(answer);
+        answerRepository.saveAll(answers);
+
+
 
         // 초대 상대 테이블에 노출 여부 'N' 으로 변경
         inviteOpponentCustomRepository.updateIsShow(inviteOpponent.getMember().getId());
