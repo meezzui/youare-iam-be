@@ -55,7 +55,6 @@ public class Answer {
     @Column(name = "IS_SHOW", length = 1)
     private String isShow;
 
-    @CreatedDate
     @NotNull
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
@@ -69,5 +68,6 @@ public class Answer {
         this.member = member;
         this.selectQuestion = selectQuestion;
         this.answerContents = answerContents;
+        this.createdAt = LocalDateTime.now();
     }
 }

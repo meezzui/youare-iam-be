@@ -8,6 +8,8 @@ import com.letter.question.entity.Question;
 import com.letter.question.entity.SelectQuestion;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 public class MemberRequest {
 
@@ -54,13 +56,25 @@ public class MemberRequest {
                     .build();
         }
 
-        public Answer toAnswerInfo(Member member, SelectQuestion selectQuestion, String answer) {
+        public Answer toInvitedPersonAnswerInfo(Member member, SelectQuestion selectQuestion, String answer) {
             return Answer.builder()
                     .member(member)
                     .couple(selectQuestion.getCouple())
                     .selectQuestion(selectQuestion)
                     .answerContents(answer)
                     .isShow("Y")
+                    .createdAt(LocalDateTime.now())
+                    .build();
+        }
+
+        public Answer toInvitePersonAnswerInfo(InviteOpponent inviteOpponent, SelectQuestion selectQuestion) {
+            return Answer.builder()
+                    .member(inviteOpponent.getMember())
+                    .couple(selectQuestion.getCouple())
+                    .selectQuestion(selectQuestion)
+                    .answerContents(inviteOpponent.getAnswer())
+                    .isShow("Y")
+                    .createdAt(inviteOpponent.getCreatedAt())
                     .build();
         }
     }
