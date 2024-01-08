@@ -3,6 +3,7 @@ package com.letter.member.entity;
 import com.letter.member.dto.OAuthResponse;
 import com.letter.question.entity.Answer;
 import com.letter.question.entity.RegisterQuestion;
+import com.letter.security.CryptoStringConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -47,11 +48,13 @@ public class Member {
 
     @Size(max = 50)
     @NotNull
+    @Convert(converter = CryptoStringConverter.class)
     @Column(name = "MBR_NM", nullable = false, length = 50)
     private String name;
 
     @Size(max = 200)
     @NotNull
+    @Convert(converter = CryptoStringConverter.class)
     @Column(name = "MBR_EML", nullable = false, length = 200)
     private String email;
 
