@@ -103,14 +103,17 @@ public class QuestionService {
         final LetterPaginationDto letterPaginationDto = new LetterPaginationDto();
 
         final List<LetterDetailResponse> letterDetailResponses = questionCustomRepository.findAllByCoupleAndNextCursor(couple, nextCursor);
-        if (letterDetailResponses.size() == 26) {
-            final LetterDetailResponse nextLetter = letterDetailResponses.get(letterDetailResponses.size() - 1);
-            letterPaginationDto.setNextCursor(Math.toIntExact(nextLetter.getSelectQuestionId()));
-            letterDetailResponses.remove(25);
-        }
 
         if (letterDetailResponses.isEmpty()) {
             return ResponseEntity.ok(null);
+        }
+
+        letterPaginationDto.setMyId(member.getId());
+
+        if (letterDetailResponses.size() == 26) {
+            final LetterDetailResponse nextLetter = letterDetailResponses.get(letterDetailResponses.size() - 1);
+            letterPaginationDto.setNextCursor(Math.toIntExact(nextLetter.getSelectQuestionId()));
+            letterDetailResponses.remove(letterDetailResponses.size() - 1);
         }
 
         final List<DetailAnswerDto> databaseDetailAnswerDtoList = answerCustomRepository.findAllBySelectQuestionIdAndCouple(letterDetailResponses.get(0).getSelectQuestionId(), couple);
