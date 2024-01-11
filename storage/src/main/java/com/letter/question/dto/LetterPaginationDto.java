@@ -17,6 +17,9 @@ public class LetterPaginationDto {
     @Schema(description = "다음 아이템의 ID")
     private int nextCursor;
 
+    @Schema(description = "사용자의 ID")
+    private String myId;
+
     public LetterPaginationDto() {
         this.nextCursor = -1;
     }
