@@ -42,4 +42,16 @@ public class InviteOpponentCustomRepositoryImpl implements InviteOpponentCustomR
         return updateIsShow;
     }
 
+    /**
+     * 상대 초대 테이블에 노출 여부가 "N" 존재여부 확인
+     * @param memberId
+     * @return
+     */
+    public Boolean existByMemberIdAndIsShow(String memberId){
+        return jpaQueryFactory
+                .selectFrom(inviteOpponent)
+                .where(inviteOpponent.member.id.eq(memberId)
+                        .and(inviteOpponent.isShow.eq("N")))
+                .fetchFirst() != null;
+    }
 }

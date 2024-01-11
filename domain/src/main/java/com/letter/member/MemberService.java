@@ -74,7 +74,6 @@ public class MemberService {
                 .build();
     }
 
-
     /**
      * 초대 수락 API
      *
@@ -83,6 +82,20 @@ public class MemberService {
      */
     @Transactional
     public MemberResponse.AcceptInviteLinkResponse acceptedInvite(MemberRequest.AcceptInviteLinkRequest request, Member member) {
+
+        //초대 링크로 들어온 사용자가 커플인지 확인. 커플이면 에러처리
+        if(member.getCouple() != null && member.getCouple().getId() != null){
+            log.error("이미 커플이 된 회원입니다.");
+            throw new CustomException(ErrorCode.ALREADY_COUPLE);
+        }
+
+        //상대 초대 테이블에 노출 여부가 N인 경우 에러처리
+        boolean isExistIsShowN = inviteOpponentCustomRepository.existByMemberIdAndIsShow(member.getId());
+
+        if(isExistIsShowN){
+            log.error("이미 커플이 된 회원이여서 링크 노출 여부가 N 입니다.");
+            throw new CustomException(ErrorCode.ALREADY_COUPLE);
+        }
 
         // 커플 정보 request 셋팅
         // 선택 질문 테이블 등록될 때 자동으로 등록 됨
