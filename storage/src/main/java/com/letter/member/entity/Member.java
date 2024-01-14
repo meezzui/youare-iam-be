@@ -85,18 +85,21 @@ public class Member {
      * @param userInfo
      * @param memberCount
      */
-    public void saveUserInfo(OAuthResponse userInfo, Long memberCount) {
+    public void saveUserInfo(OAuthResponse userInfo, Long memberCount, String refreshToken) {
         // 생성한 회원 아이디
         createMemberId(memberCount);
         // 값 셋팅
         this.name = userInfo.getNickname();
         this.email = userInfo.getEmail();
         this.kakaoId = userInfo.getId();
+        this.refreshToken = refreshToken;
 
         // TODO 임시 값 변경
         this.mediaSeparator = "kakao";
-        this.refreshToken = "token";
+    }
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     /**
