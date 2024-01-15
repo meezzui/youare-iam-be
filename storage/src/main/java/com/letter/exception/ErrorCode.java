@@ -28,7 +28,8 @@ public enum ErrorCode {
     /* 409 */
     ALREADY_SELECTED_QUESTION(HttpStatus.CONFLICT, "Q003", "이미 선택했던 질문입니다."),
     ALREADY_ANSWER(HttpStatus.CONFLICT, "A001", "질문에 이미 답변을 작성했습니다."),
-    ALREADY_COUPLE(HttpStatus.CONFLICT, "C002","이미 커플이 된 회원입니다.");
+    ALREADY_COUPLE(HttpStatus.CONFLICT, "C002", "이미 커플이 된 회원입니다."),
+    OPPONENT_ALREADY_COUPLE(HttpStatus.CONFLICT, "C003", "상대는 이미 커플이 된 회원입니다.");
 
 
     private final HttpStatus status;

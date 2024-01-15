@@ -83,6 +83,21 @@ public class MemberService {
     @Transactional
     public MemberResponse.AcceptInviteLinkResponse acceptedInvite(MemberRequest.AcceptInviteLinkRequest request, Member member) {
 
+        // 링크 고유 값으로 상대 초대 테이블에 해당 회원 조회
+        InviteOpponent inviteOpponent = inviteOpponentRepository.findQuestionByLinkKey(request.getLinkKey()).orElseThrow(
+                () -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
+        );
+
+        Member findMember = memberRepository.findById(inviteOpponent.getMember().getId()).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        // 초대한 회원이 이미 커플이 된 경우 에러처리
+        if(findMember.getCouple() != null && findMember.getCouple().getId() != null)
+        {
+            log.error("상대는 이미 커플이 된 회원입니다.");
+            throw new CustomException(ErrorCode.OPPONENT_ALREADY_COUPLE);
+        }
+
         //초대 링크로 들어온 사용자가 커플인지 확인. 커플이면 에러처리
         if(member.getCouple() != null && member.getCouple().getId() != null){
             log.error("이미 커플이 된 회원입니다.");
@@ -100,11 +115,6 @@ public class MemberService {
         // 커플 정보 request 셋팅
         // 선택 질문 테이블 등록될 때 자동으로 등록 됨
         Couple couple = request.toCoupleInfo();
-
-        // 링크 고유 값으로 상대 초대 테이블에 질문 아이디 조회
-        InviteOpponent inviteOpponent = inviteOpponentRepository.findQuestionByLinkKey(request.getLinkKey()).orElseThrow(
-                () -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
-        );
 
         if (Objects.isNull(inviteOpponent.getQuestion())) {
             log.error("질문 아이디가 null 입니다.");
