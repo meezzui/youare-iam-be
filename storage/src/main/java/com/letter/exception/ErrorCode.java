@@ -19,6 +19,7 @@ public enum ErrorCode {
     ALREADY_SELECTED_QUESTION(HttpStatus.CONFLICT, "이미 선택했던 질문입니다."),
     ALREADY_ANSWER(HttpStatus.CONFLICT, "질문에 이미 답변을 작성했습니다."),
     ALREADY_COUPLE(HttpStatus.CONFLICT,"이미 커플이 된 회원입니다."),
+    OPPONENT_ALREADY_COUPLE(HttpStatus.CONFLICT,"상대는 이미 커플이 된 회원입니다."),
 
     /* 401 */
     UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED,"잘못된 JWT 토큰 입니다. 토큰이 비어있을 수 있으니 확인해주세요."),
