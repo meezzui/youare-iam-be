@@ -45,7 +45,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         String token = webRequest.getHeader("Authorization").substring(7);
         log.info("토큰 확인!! {}",token);
 
-        jwtProvider.validateToken(token);
+        jwtProvider.validateToken(token, JwtProvider.ACCESS_TYPE);
         String memberId = jwtProvider.getUserInfoFromToken(token);
         final Optional<Member> member = memberRepository.findById(memberId);
         if(member.isEmpty()){
