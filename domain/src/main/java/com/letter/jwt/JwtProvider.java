@@ -30,6 +30,10 @@ public class JwtProvider {
     public static final long EXPIRATION_TIME =  30 * 60 * 1000L; // 유효시간은 30분
     public static final String TOKEN_PREFIX = "Bearer "; // Bearer 뒤에 무조건 띄어쓰기 한번 해주기
     public static final String HEADER_STRING = "Authorization"; // 해더에 Authorization 이라는 토큰을 넣어 줌
+
+    public static final String ACCESS_TYPE = "access";
+    public static final String REFRESH_TYPE = "refresh";
+
     /**
      * jwt 토큰 생성하기
      * @param userInfo
@@ -72,23 +76,34 @@ public class JwtProvider {
     /**
      * 토큰 검증
      * @param token
-     * @return
+     * @param type
      */
-    public void validateToken(String token) {
+    public void validateToken(String token, String type) {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
         } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            log.error("유효하지 않는 JWT 서명 입니다.");
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
-            throw new CustomException(ErrorCode.EXPIRED_TOKEN);
+
+            if (type.equals(ACCESS_TYPE)) {
+                final ErrorCode expiredAccessToken = ErrorCode.EXPIRED_ACCESS_TOKEN;
+                log.error("error message: {}", expiredAccessToken.getMessage());
+                throw new CustomException(expiredAccessToken);
+            }
+
+            if (type.equals(REFRESH_TYPE)) {
+                final ErrorCode expiredRefreshToken = ErrorCode.EXPIRED_REFRESH_TOKEN;
+                log.error("error message: {}", expiredRefreshToken.getMessage());
+                throw new CustomException(expiredRefreshToken);
+            }
+
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-            throw new CustomException(ErrorCode.UNSUPPORTED_TOKEN);
+            log.error("지원되지 않는 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. 토큰이 비었을 수 있으니 다시 확인해주세요.");
-            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+            log.error("잘못된 JWT 토큰 입니다. 토큰이 비었을 수 있으니 다시 확인해주세요.");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
 

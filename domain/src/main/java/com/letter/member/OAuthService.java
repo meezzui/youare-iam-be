@@ -245,7 +245,7 @@ public class OAuthService {
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
-        jwtProvider.validateToken(member.getRefreshToken());
+        jwtProvider.validateToken(member.getRefreshToken(), JwtProvider.REFRESH_TYPE);
         final String accessToken = jwtProvider.createAccessToken(memberId, member.getName());
 
         HttpHeaders headers = new HttpHeaders();

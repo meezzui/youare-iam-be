@@ -13,10 +13,9 @@ public enum ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "B002","찾으시는 결과가 없습니다."),
 
     /* Auth 관련 Error */
-    UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED, "AU001","잘못된 JWT 토큰 입니다. 토큰이 비어있을 수 있으니 확인해주세요."),
-    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AU002","만료된 JWT token 입니다."),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AU003","유효하지 않는 JWT 토큰 입니다."),
-    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "AU004","지원되지 않는 JWT 토큰 입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AU001","유효하지 않는 JWT 토큰 입니다."),
+    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AU002","만료된 Access token 입니다."),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AU003","만료된 Refresh token 입니다."),
 
     /* Member 관련 Error */
     MEMBER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "M001","초대한 사람의 아이디와 초대된 사람의 아이디가 같습니다."),
