@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({CustomException.class})
     protected ResponseEntity<ExceptionResponse> handlerCustomException(CustomException exception) {
         final ErrorCode errorCode = exception.getErrorCode();
-        return ResponseEntity.status(errorCode.getStatus()).body(new ExceptionResponse(errorCode.getStatus().value(), errorCode.getMessage()));
+        return ResponseEntity.status(errorCode.getStatus()).body(new ExceptionResponse(errorCode.getStatus().value(), errorCode.getCode(), errorCode.getMessage()));
     }
 
 }

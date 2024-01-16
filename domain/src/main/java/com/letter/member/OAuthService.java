@@ -1,11 +1,14 @@
 package com.letter.member;
 
 import com.google.gson.JsonElement;
+import com.letter.exception.CustomException;
+import com.letter.exception.ErrorCode;
 import com.letter.jwt.JwtProvider;
 import com.letter.member.dto.OAuthResponse;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.MemberCustomRepositoryImpl;
 import com.letter.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.google.gson.JsonParser;
@@ -19,14 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Optional;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
-    private final MemberRepository memberRepository;
+
     private final JwtProvider jwtProvider;
+
+    private final MemberRepository memberRepository;
     private final MemberCustomRepositoryImpl memberCustomRepository;
 
     @Value("${oauth.client_id}")
@@ -43,43 +49,48 @@ public class OAuthService {
      * @return
      */
     @Transactional
-    public ResponseEntity getOAuthInfo(String code){
+    public ResponseEntity<String> getOAuthInfo(String code){
 
         // dto에 담은 사용자 정보 가져오기
         OAuthResponse userInfo = getKakaoUserInfo(code);
 
         // 카카오 아이디로 디비에 해당 회원 정보가 있는지 조회
-        String userId = memberCustomRepository.findIdByKakaId(userInfo.getId());
+        Optional<Member> optionalMember = memberCustomRepository.findIdByKakaoId(userInfo.getId());
 
         String memberId = "";
 
+        String refreshToken = jwtProvider.createRefreshToken();
+
         // 회원 정보가 있으면 디비에 저장없이 토큰 발급
         // 회원 정보가 없으면 정보를 디비에 저장하고 토큰 발급
-        if(userId != null){
+        if(optionalMember.isPresent()){
             // 회원 테이블에 저장된 회원 아이디 가져오기
-            memberId = userId;
+            final Member member = optionalMember.get();
+            memberId = member.getId();
+
+            member.updateRefreshToken(refreshToken);
         }
 
-        if(userId == null){
+        if(optionalMember.isEmpty()){
             // 총 회원 수 + 1(회원 아이디 만드는데 사용)
             Long memberCount = memberRepository.countAllBy() + 1;
             //디비에 회원 정보 저장(회원 아이디,이메일,이름,미디어 구분 값,리프레쉬 토큰)
             // Member 엔티티에 값 셋팅
-            Member mbrEntity = new Member();
-            mbrEntity.saveUserInfo(userInfo, memberCount);
+            Member member = new Member();
+            member.saveUserInfo(userInfo, memberCount, refreshToken);
             // 디비에 저장
-            Member insertMember = memberRepository.save(mbrEntity);
+            Member insertMember = memberRepository.save(member);
 
             // 저장된 회원 아이디 가져와서 memberId에 담아주기
             memberId = insertMember.getId();
         }
 
         // jwt 토큰 생성
-        String jwtToken = jwtProvider.createJwtToken(memberId,userInfo);
+        String accessToken = jwtProvider.createAccessToken(memberId, userInfo);
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
-        headers.add(jwtProvider.HEADER_STRING, jwtProvider.TOKEN_PREFIX + jwtToken);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(jwtToken);
+        headers.add(JwtProvider.HEADER_STRING, JwtProvider.TOKEN_PREFIX + accessToken);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(accessToken);
     }
 
 
@@ -222,6 +233,24 @@ public class OAuthService {
                 .email(email)
                 .id(id)
                 .build();
+    }
+
+
+    public ResponseEntity<Void> issuedAccessTokenByRefreshToken(HttpServletRequest httpServletRequest) {
+
+        final String expiredAccessToken = jwtProvider.bringToken(httpServletRequest);
+        final String memberId = jwtProvider.getMemberIdByExpiredJwt(expiredAccessToken);
+
+        final Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        jwtProvider.validateToken(member.getRefreshToken());
+        final String accessToken = jwtProvider.createAccessToken(memberId, member.getName());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProvider.HEADER_STRING, JwtProvider.TOKEN_PREFIX + accessToken);
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(null);
     }
 
 }
