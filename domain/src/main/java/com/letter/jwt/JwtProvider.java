@@ -3,10 +3,10 @@ package com.letter.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letter.exception.CustomException;
 import com.letter.exception.ErrorCode;
-import com.letter.member.dto.OAuthResponse;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
@@ -36,20 +42,10 @@ public class JwtProvider {
 
     /**
      * jwt 토큰 생성하기
-     * @param userInfo
+     * @param memberId
+     * @param nickname
      * @return
      */
-    public String createAccessToken(String memberId, OAuthResponse userInfo) {
-
-        return JWT.create()
-                .withSubject(memberId) // Payload 에 들어갈 등록된 클레임 을 설정한다.
-                .withExpiresAt(new Date(System.currentTimeMillis()+ EXPIRATION_TIME)) //JwtProperties 의 만료 시간 필드를 불러와 넣어준다.
-                .withClaim("nickname", userInfo.getNickname()) // Payload 에 들어갈 개인 클레임 을 설정한다.
-                // .withClaim(이름, 내용) 형태로 작성한다. 사용자를 식별할 수 있는 값과, 따로 추가하고 싶은 값을 자유롭게 넣는다.
-                .sign(Algorithm.HMAC512(secretKey));
-    }
-
-
     public String createAccessToken(String memberId, String nickname) {
 
         return JWT.create()
@@ -137,23 +133,53 @@ public class JwtProvider {
     /**
      * 만료된 Access token 으로 claims 꺼내기
      * @param accessToken
-     * @return
+     * @return memberId
      */
-    public String getMemberIdByExpiredJwt(String accessToken) {
+    public String getMemberIdByExpiredToken(String accessToken) {
         final String[] tokenParts = accessToken.split("\\.");
-        final String jsonData = new String(Base64.getDecoder().decode(tokenParts[1]));
+        final String payloadJson = new String(Base64.getDecoder().decode(tokenParts[1]));
 
-        // TODO JWT 시크릿 키 검증
-
-        Map claims = null;
+        Map<?, ?> claims = null;
         try {
-            claims = new ObjectMapper().readValue(jsonData, Map.class);
+            claims = new ObjectMapper().readValue(payloadJson, Map.class);
+        } catch (JsonMappingException e) {
+            log.error("Json 매핑 실패");
         } catch (JsonProcessingException exception) {
-            log.error("ObjectMapper로 Json 파싱 실패");
-            log.error(exception.getMessage());
+            log.error("Json 파싱 실패");
         }
 
         return (String) claims.get("sub");
     }
+
+
+    /**
+     * 만료된 Access token signature 검사
+     * token의 signature는 header + payload에 secretKey로 서명한 것이기 때문에 헤더 검사가 따로 필요하지 않다.
+     * @param accessToken
+     */
+    public void validateExpiredTokenSignature(String accessToken) {
+        final String[] tokenParts = accessToken.split("\\.");
+        final byte[] signatureBytes = Base64.getUrlDecoder().decode(tokenParts[2]);
+
+        try {
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+            Mac hmacSHA512 = Mac.getInstance("HmacSHA512");
+            hmacSHA512.init(secretKeySpec);
+
+            String headerPayload = tokenParts[0] + "." + tokenParts[1];
+            byte[] hashed = hmacSHA512.doFinal(headerPayload.getBytes(StandardCharsets.UTF_8));
+
+            if (!MessageDigest.isEqual(hashed, signatureBytes)) {
+                log.error("유효하지 않은 JWT 서명");
+                throw new CustomException(ErrorCode.INVALID_TOKEN);
+            }
+
+        } catch (NoSuchAlgorithmException exception) {
+            log.error("존재하지 않는 알고리즘");
+        } catch (InvalidKeyException exception) {
+            log.error("유효하지 않는 Secret key 명세");
+        }
+    }
+
 
 }
