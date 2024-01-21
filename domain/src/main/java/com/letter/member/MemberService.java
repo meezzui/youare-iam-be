@@ -51,7 +51,14 @@ public class MemberService {
             log.error("이미 커플이 된 회원입니다.");
             throw new CustomException(ErrorCode.ALREADY_COUPLE);
         }
-        // TODO:기존에 보낸 초대 링크가 있다면 초대 링크 키의 유효시간 체크. 링크 키가 생성된지 3일 이내 이면 초대 링크 생성 불가
+
+        // 기존에 보낸 초대 링크가 있다면 초대 링크 키의 유효시간 체크. 링크 키가 생성된지 3일 이내 이면 초대 링크 생성 불가
+        InviteOpponent existLinkData = inviteOpponentCustomRepository.existByMemberIdAndCreatedAt(member.getId());
+
+        if(existLinkData != null){
+            log.error("기존에 생성된 초대링크가 있습니다.");
+            throw new CustomException(ErrorCode.ALREADY_LINK);
+        }
 
         // 링크 고유 키 생성
         String uuid = UUID.randomUUID().toString();
@@ -110,6 +117,14 @@ public class MemberService {
         if(isExistIsShowN){
             log.error("이미 커플이 된 회원이여서 링크 노출 여부가 N 입니다.");
             throw new CustomException(ErrorCode.ALREADY_COUPLE);
+        }
+
+        // 초대 링크 키의 유효시간 체크. 링크 키가 생성된지 1일 이내 이면 초대 수락 불가
+        InviteOpponent existValidLink = inviteOpponentCustomRepository.existByLinkKeyAndCreatedAt(request.getLinkKey());
+
+        if(existValidLink == null){
+            log.error("해당 링크는 유효시간이 만료되었습니다.");
+            throw new CustomException(ErrorCode.EXPIRED_LINK);
         }
 
         // 커플 정보 request 셋팅
