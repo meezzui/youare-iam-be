@@ -42,6 +42,8 @@ public class OAuthService {
     @Value("${oauth.client_secret}")
     private String client_secret;
 
+
+
     /**
      * 카카오 사용자 회원정보 담긴 것 가져오기
      * 회원 정보가 디비에 없으면 저장하고 있으면 바로 access token 발급
@@ -86,7 +88,7 @@ public class OAuthService {
         }
 
         // jwt 토큰 생성
-        String accessToken = jwtProvider.createAccessToken(memberId, userInfo);
+        String accessToken = jwtProvider.createAccessToken(memberId, userInfo.getNickname());
         //헤더에 토큰 담아주기
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProvider.HEADER_STRING, JwtProvider.TOKEN_PREFIX + accessToken);
@@ -161,6 +163,8 @@ public class OAuthService {
         return access_Token;
 
     }
+
+
 
     /**
      * 카카오에서 가져온 access token으로 사용자 정보 조회 후 dto에 담기
@@ -239,7 +243,8 @@ public class OAuthService {
     public ResponseEntity<Void> issuedAccessTokenByRefreshToken(HttpServletRequest httpServletRequest) {
 
         final String expiredAccessToken = jwtProvider.bringToken(httpServletRequest);
-        final String memberId = jwtProvider.getMemberIdByExpiredJwt(expiredAccessToken);
+        jwtProvider.validateExpiredTokenSignature(expiredAccessToken);
+        final String memberId = jwtProvider.getMemberIdByExpiredToken(expiredAccessToken);
 
         final Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
