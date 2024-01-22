@@ -59,7 +59,7 @@ public class MemberController {
 
     @Operation(summary = "사용자의 상태 확인 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "상태 확인 완료")
+            @ApiResponse(responseCode = "200", description = "상태 확인 완료")
     })
     @LoginCheck
     @GetMapping("/user-status")
