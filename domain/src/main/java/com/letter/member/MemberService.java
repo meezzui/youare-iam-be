@@ -2,9 +2,10 @@ package com.letter.member;
 
 import com.letter.exception.CustomException;
 import com.letter.exception.ErrorCode;
-import com.letter.jwt.JwtProvider;
 import com.letter.member.dto.MemberRequest;
 import com.letter.member.dto.MemberResponse;
+import com.letter.member.dto.MemberStatusResponse;
+import com.letter.member.dto.role.UserStatusRole;
 import com.letter.member.entity.Couple;
 import com.letter.member.entity.InviteOpponent;
 import com.letter.member.entity.Member;
@@ -34,9 +35,7 @@ public class MemberService {
     private final AnswerRepository answerRepository;
     private final SelectQuestionRepository selectQuestionRepository;
 
-    private final JwtProvider jwtProvider;
     private final InviteOpponentCustomRepositoryImpl inviteOpponentCustomRepository;
-    private final MemberCustomRepositoryImpl memberCustomRepository;
 
     /**
      * 상대 초대 링크 생성 api
@@ -203,5 +202,20 @@ public class MemberService {
                 .invitedPersonName(name)
                 .question(question)
                 .build();
+    }
+
+
+    public MemberStatusResponse getUserStatus(Member member) {
+        boolean isCouple = member.getCouple() != null;
+        String linkKey = inviteOpponentCustomRepository.getLinkKey(member);
+
+        UserStatusRole userStatus;
+        if (isCouple) {
+            userStatus = UserStatusRole.COUPLE_USER;
+        } else {
+            userStatus = linkKey == null ? UserStatusRole.NON_COUPLE_USER : UserStatusRole.COUPLE_WAITING_USER;
+        }
+
+        return new MemberStatusResponse(userStatus, linkKey);
     }
 }
