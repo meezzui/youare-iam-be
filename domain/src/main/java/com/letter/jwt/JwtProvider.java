@@ -130,35 +130,19 @@ public class JwtProvider {
     }
 
 
-    /**
-     * 만료된 Access token 으로 claims 꺼내기
-     * @param accessToken
-     * @return memberId
-     */
-    public String getMemberIdByExpiredToken(String accessToken) {
+    public String expiredTokenCombo(String accessToken) {
         final String[] tokenParts = accessToken.split("\\.");
-        final String payloadJson = new String(Base64.getDecoder().decode(tokenParts[1]));
-
-        Map<?, ?> claims = null;
-        try {
-            claims = new ObjectMapper().readValue(payloadJson, Map.class);
-        } catch (JsonMappingException e) {
-            log.error("Json 매핑 실패");
-        } catch (JsonProcessingException exception) {
-            log.error("Json 파싱 실패");
-        }
-
-        return (String) claims.get("sub");
+        validateExpiredTokenSignature(tokenParts);
+        return getMemberIdByExpiredToken(tokenParts);
     }
 
 
     /**
      * 만료된 Access token signature 검사
      * token의 signature는 header + payload에 secretKey로 서명한 것이기 때문에 헤더 검사가 따로 필요하지 않다.
-     * @param accessToken
+     * @param tokenParts
      */
-    public void validateExpiredTokenSignature(String accessToken) {
-        final String[] tokenParts = accessToken.split("\\.");
+    private void validateExpiredTokenSignature(String[] tokenParts) {
         final byte[] signatureBytes = Base64.getUrlDecoder().decode(tokenParts[2]);
 
         try {
@@ -181,5 +165,25 @@ public class JwtProvider {
         }
     }
 
+
+    /**
+     * 만료된 Access token 으로 claims 꺼내기
+     * @param tokenParts
+     * @return memberId
+     */
+    private String getMemberIdByExpiredToken(String[] tokenParts) {
+        final String payloadJson = new String(Base64.getDecoder().decode(tokenParts[1]));
+
+        Map<?, ?> claims = null;
+        try {
+            claims = new ObjectMapper().readValue(payloadJson, Map.class);
+        } catch (JsonMappingException e) {
+            log.error("Json 매핑 실패");
+        } catch (JsonProcessingException exception) {
+            log.error("Json 파싱 실패");
+        }
+
+        return (String) claims.get("sub");
+    }
 
 }

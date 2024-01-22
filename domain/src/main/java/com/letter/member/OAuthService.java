@@ -243,8 +243,7 @@ public class OAuthService {
     public ResponseEntity<Void> issuedAccessTokenByRefreshToken(HttpServletRequest httpServletRequest) {
 
         final String expiredAccessToken = jwtProvider.bringToken(httpServletRequest);
-        jwtProvider.validateExpiredTokenSignature(expiredAccessToken);
-        final String memberId = jwtProvider.getMemberIdByExpiredToken(expiredAccessToken);
+        final String memberId = jwtProvider.expiredTokenCombo(expiredAccessToken);
 
         final Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
@@ -258,6 +257,19 @@ public class OAuthService {
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(null);
     }
 
+
+    @Transactional
+    public void logout(HttpServletRequest httpServletRequest) {
+
+        final String expiredAccessToken = jwtProvider.bringToken(httpServletRequest);
+        final String memberId = jwtProvider.expiredTokenCombo(expiredAccessToken);
+
+        final Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        member.resetRefreshToken();
+    }
 }
 
 
