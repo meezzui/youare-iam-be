@@ -1,18 +1,14 @@
 package com.letter.member.repository;
 
 import com.letter.member.entity.InviteOpponent;
-import com.querydsl.core.types.dsl.DateTimeExpression;
+import com.letter.member.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-import static com.letter.member.entity.QCouple.couple;
-import static com.letter.member.entity.QMember.member;
-import static com.letter.question.entity.QSelectQuestion.selectQuestion;
 import static com.letter.member.entity.QInviteOpponent.inviteOpponent;
 import static com.letter.question.entity.QQuestion.question;
 
@@ -93,5 +89,16 @@ public class InviteOpponentCustomRepositoryImpl implements InviteOpponentCustomR
                         .and(inviteOpponent.createdAt.after(minutesAgo)))
                 .orderBy(inviteOpponent.createdAt.desc())
                 .fetchFirst();
+    }
+
+
+    public String getLinkKey(Member member) {
+        return jpaQueryFactory
+                .select(inviteOpponent.linkKey)
+                .from(inviteOpponent)
+                .where(inviteOpponent.member.eq(member),
+                        inviteOpponent.createdAt.after(LocalDateTime.now().minusDays(1)),
+                        inviteOpponent.isShow.eq("Y"))
+                .fetchOne();
     }
 }
