@@ -25,6 +25,8 @@ public enum ErrorCode {
     COUPLE_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "커플로 등록되지 않은 사용자입니다."),
     ALREADY_COUPLE(HttpStatus.CONFLICT, "C002", "이미 커플이 된 회원입니다."),
     OPPONENT_ALREADY_COUPLE(HttpStatus.CONFLICT, "C003", "상대는 이미 커플이 된 회원입니다."),
+    ALREADY_LINK(HttpStatus.CONFLICT,"C004","이미 초대링크가 생성되었습니다."),
+    EXPIRED_LINK(HttpStatus.CONFLICT,"C005","해당 링크는 유효시간이 만료되었습니다."),
 
     /* Question 관련 Error */
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Q001", "프리셋에 존재하지 않는 질문입니다."),
