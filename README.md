@@ -47,60 +47,173 @@ _너는 어떻게 생각해? 나는…_
 
 # 프로젝트 주요 기능 소개
 
-| 기능 | 기능 설명 | 실행 |
-|-------|-------|-------|
-| 로그인  | 메인 페이지에서 ‘카카오 로그인’ 버튼을 누르면 카카오 소셜 로그인 페이지로 이동하여 카카오 로그인을 할 수 있습니다.  | <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/login.gif?raw=true' width='30%'>  |
-| 내용3  | 내용4  | 내용2  |
+<table align="center">
+  <tr align="center">
+    <td>로그인</td>
+    <td>동작</td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>메인 페이지에서 ‘카카오 로그인’ 버튼을 누르면 카카오 소셜 로그인 페이지로 </b>
+      <br/>
+      <b>이동하여 카카오 로그인을 할 수 있습니다.</b>
+    </td>
+    <td align="center">
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/login.gif?raw=true' width='40%'>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>사용자 초대 및 초대 수락</td>
+    <td>동작</td>
+  </tr>
+  <tr>
+    <td>
+      <b style='font-style:bold'>1. 초대하기</b>
+      <br/>
+     <b>상대방에게 묻고 싶은 질문을 선택하고, 카카오톡 친구에게 공유하여 초대할 수 있습니다.</b>
+      <br/>
+      <br/>
+     <b style='font-style:bold'>2. 초대 수락하기</b>
+      <br/>
+     <b>- 초대받은 사용자는 카카오톡으로 공유된 링크에 접속하여 질문에 대한 답변을 작성할 수 있습니다.</b>
+      <br/>
+      <br/>
+     <b>- 초대받은 사용자가 답변을 등록하려면 로그인을 해야 하며, 답변 작성 후 등록시 카카오 로그인 페이지로 리다이렉트됩니다.</b>
+      <br/>
+      <br/>
+     <b>- 로그인에 성공하면 로그인 전에 작성한 답변을 등록할 수 있으며, 커플이 맺어짐과 동시에 서로의 답변을 확인할 수 있습니다.</b>
+    </td>
+    <td align="center">
+    </td>
+  </tr>
+  <tr align="center">
+    <td>질문 선택</td>
+    <td>동작</td>
+  </tr>
+  <tr align="center">
+    <td>
+     <b>커플이 답변할 질문을 질문 선택 페이지에서 매일 한개씩 선택할 수 있습니다.</b>
+      <br/>
+      <br/>
+     <b>질문을 선택하면 대화 상세 페이지로 이동하며, 선택한 질문이 하단에 추가된 것을</b>
+      <br/>
+      <b>확인할 수 있습니다.</b>
+    </td>
+    <td align="center">
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/question.gif?raw=true' width='40%'>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>답변 등록</td>
+    <td>동작</td>
+  </tr>
+  <tr align="center">
+    <td>
+     <b>대화 상세 페이지에서 선택한 질문을 클릭하여 답변을 작성할 수 있습니다.</b>
+      <br/>
+      <br/>
+     <b>두 사람 모두 작성한 후 답변을 확인할 수 있으며, 둘 중 한 명만 답변했을 경우</b>
+      <br/>
+      <b>안내 메시지가 오버레이되며 답변을 확인할 수 없습니다.</b>
+    </td>
+    <td align="center">
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/answer.gif?raw=true' width='40%'>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>대화 상세 페이지</td>
+    <td>동작</td>
+  </tr>
+  <tr align="center">
+    <td>
+     <b>선택한 질문과 이에 대한 답변은 채팅 형식으로 대화 상세 페이지에 누적됩니다.</b>
+      <br/>
+      <br/>
+     <b>로그인한 사용자의 답변은 오른편에, 상대방의 답변은 왼편에 배치됩니다.</b>
+      <br/>
+      <br/>
+      <b>최신 질문일수록 하단에서 확인할 수 있으며,</b>
+      <br/>
+      <b>오래된 질문은 스크롤을 위로 올려 확인할 수 있습니다.</b>
+    </td>
+    <td align="center">
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/chatroom.gif?raw=true' width='40%'>
+    </td>
+  </tr>
+</table>
 
-<div style="display:flex;">
-  <div>
-    1. 로그인
+<br/>
 
-   - 메인 페이지에서 ‘카카오 로그인’ 버튼을 누르면 카카오 소셜 로그인 페이지로 이동하여 카카오 로그인을 할 수 있습니다.
-  </div>
-  <div>
-    <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/login.gif?raw=true' width='30%'>
-  </div>
-</div>
+# 🚀 프로젝트 실행 방법
+
+### 요구사항
+
+- Java 17
+- Docker
+- MySQL 8.0
+
+### 프로젝트 클론
+
+```bash
+git clone https://github.com/coding-union-kr/youare-iam-be.git
+```
+
+### 프로젝트 루트 폴더에 `.env` 파일 작성
+
+```jsx
+DB_HOSTNAME=
+DB_NAME=
+DB_PASSWORD=
+DB_USERNAME=
+ENCRYPTION_IV=
+ENCRYPTION_SECRET_KEY=
+JWT_SECRET=
+OAUTH_CLIENT_ID=
+OAUTH_CLIENT_SECRET=
+OAUTH_REDIRECT_URI=
+```
+
+### 프로젝트 실행
+
+- 작은 프로젝트라서 `prod`와 `local`환경으로만 구성
+
+```bash
+./gradlew build && java -jar -Dspring.profiles.active=local ./common/build/libs/common-0.0.1-SNAPSHOT.jar
+```
+
+---
+
+## 5. 아키텍처
+
+<img src="https://github.com/coding-union-kr/youare-iam-be/assets/86812098/675b74bd-7d21-4948-8003-9bc38edbe5c4" width="700px"/>
 
 
-     
+# 🛠️ 백엔드 기술 스택
+### 기술 스택💙
+- JAVA 17                   
+- Spring boot 3.2.0         
+- MySQL 8.0.33              
+- Querydsl 5.0.0            
+- JPA                      
+- JWT 0.11.2
+- Oauth 2.0
 
-2. 사용자 초대 및 초대 수락
+### Dev Ops💚
+- Elastic Beanstalk
+- Amazon RDS
+- Amazon EC2
+- AWS
+- Github Actions
 
-   - 초대하기
-     - 상대방에게 묻고 싶은 질문을 선택하고, 카카오톡 친구에게 공유하여 초대할 수 있습니다.
-   - 초대 수락하기
-     - 초대받은 사용자는 카카오톡으로 공유된 링크에 접속하여 질문에 대한 답변을 작성할 수 있습니다.
-     - 초대받은 사용자가 답변을 등록하려면 로그인을 해야 하며, 답변 작성 후 등록시 카카오 로그인 페이지로 리다이렉트됩니다.
-     - 로그인에 성공하면 로그인 전에 작성한 답변을 등록할 수 있으며, 커플이 맺어짐과 동시에 서로의 답변을 확인할 수 있습니다.
-       `이미지 추후 업로드`
+### 사용한 Tools🧡
+- Github
+- Swagger 3.0
+- IntelliJ
+- DataGrip
 
-3. 질문 선택
-
-   - 커플이 답변할 질문을 질문 선택 페이지에서 매일 한개씩 선택할 수 있습니다.
-   - 질문을 선택하면 대화 상세 페이지로 이동하며, 선택한 질문이 하단에 추가된 것을 확인할 수 있습니다.
-
-     <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/question.gif?raw=true' width='30%'>
-
-4. 질문 답변 등록
-
-   - 대화 상세 페이지에서 선택한 질문을 클릭하여 답변을 작성할 수 있습니다.
-   - 두 사람 모두 작성한 후 답변을 확인할 수 있으며, 둘 중 한 명만 답변했을 경우 안내 메시지가 오버레이되며 답변을 확인할 수 없습니다.
-
-     <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/answer.gif?raw=true' width='30%'>
-
-5. 대화 상세 페이지
-
-   - 선택한 질문과 이에 대한 답변은 채팅 형식으로 대화 상세 페이지에 누적됩니다.
-   - 로그인한 사용자의 답변은 오른편에, 상대방의 답변은 왼편에 배치됩니다.
-   - 최신 질문일수록 하단에서 확인할 수 있으며, 오래된 질문은 스크롤을 위로 올려 확인할 수 있습니다.
-
-     <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/chatroom.gif?raw=true' width='30%'>
 
 <br/>
 <hr/>
-<br/>
 
 # 🤝 팀 소개
 
@@ -164,7 +277,7 @@ _너는 어떻게 생각해? 나는…_
             <br/>
             - sns 로그인
             <br/>
-            - 사용자 초대에 관련 API
+            - 사용자 초대 관련 API
         </td>
         <td style="width: 50%;">
             개발을 좋아하고 문제 해결이 재밌어요!
@@ -208,51 +321,3 @@ _너는 어떻게 생각해? 나는…_
         </td>
     </tr>
 </table>
-
-# 🚀 프로젝트 실행 방법
-
-### 요구사항
-
-- Java 17
-- Docker
-- MySQL 8.0
-
-### 프로젝트 클론
-
-```bash
-git clone https://github.com/coding-union-kr/youare-iam-be.git
-```
-
-### 프로젝트 루트 폴더에 `.env` 파일 작성
-
-```jsx
-DB_HOSTNAME=
-DB_NAME=
-DB_PASSWORD=
-DB_USERNAME=
-ENCRYPTION_IV=
-ENCRYPTION_SECRET_KEY=
-JWT_SECRET=
-OAUTH_CLIENT_ID=
-OAUTH_CLIENT_SECRET=
-OAUTH_REDIRECT_URI=
-```
-
-### 프로젝트 실행
-
-- 작은 프로젝트라서 `prod`와 `local`환경으로만 구성
-
-```bash
-./gradlew build && java -jar -Dspring.profiles.active=local ./common/build/libs/common-0.0.1-SNAPSHOT.jar
-```
-
----
-
-## 5. 아키텍처
-
-<img src="https://github.com/coding-union-kr/youare-iam-be/assets/86812098/675b74bd-7d21-4948-8003-9bc38edbe5c4" width="700px"/>
-
-
-# 🛠️ 백엔드 기술 스택
-
-
