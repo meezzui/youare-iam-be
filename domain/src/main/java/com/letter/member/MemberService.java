@@ -135,7 +135,7 @@ public class MemberService {
         }
 
         // 초대한 사람의 아이디와 초대된 사람의 아이디가 같을 경우 에러 처리
-        if(inviteOpponent.getMember().equals(member.getId())){
+        if(inviteOpponent.getMember().getId().equals(member.getId())){
             log.info("초대한 사람의 아이디와 초대된 사람의 아이디가 같습니다.");
             throw new CustomException(ErrorCode.MEMBER_BAD_REQUEST);
         }
