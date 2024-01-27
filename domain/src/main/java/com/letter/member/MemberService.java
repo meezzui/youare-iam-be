@@ -94,6 +94,12 @@ public class MemberService {
                 () -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
         );
 
+        // 초대한 사람의 아이디와 초대된 사람의 아이디가 같을 경우 에러 처리
+        if(inviteOpponent.getMember().getId().equals(member.getId())){
+            log.info("초대한 사람의 아이디와 초대된 사람의 아이디가 같습니다.");
+            throw new CustomException(ErrorCode.MEMBER_BAD_REQUEST);
+        }
+
         Member findMember = memberRepository.findById(inviteOpponent.getMember().getId()).orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -132,12 +138,6 @@ public class MemberService {
 
         if (Objects.isNull(inviteOpponent.getQuestion())) {
             log.error("질문 아이디가 null 입니다.");
-        }
-
-        // 초대한 사람의 아이디와 초대된 사람의 아이디가 같을 경우 에러 처리
-        if(inviteOpponent.getMember().equals(member.getId())){
-            log.info("초대한 사람의 아이디와 초대된 사람의 아이디가 같습니다.");
-            throw new CustomException(ErrorCode.MEMBER_BAD_REQUEST);
         }
 
         // 회원 테이블에 커플 아이디 업데이트(초대한 회원)
