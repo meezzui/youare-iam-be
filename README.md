@@ -63,18 +63,24 @@ _너는 어떻게 생각해? 나는…_
     </td>
   </tr>
   <tr align="center">
-    <td>사용자 초대 및 초대 수락</td>
+    <td>사용자 초대</td>
     <td>동작</td>
   </tr>
   <tr>
-    <td>
-      <b style='font-style:bold'>1. 초대하기</b>
-      <br/>
+    <td align="center">
      <b>상대방에게 묻고 싶은 질문을 선택하고, 카카오톡 친구에게 공유하여 초대할 수 있습니다.</b>
-      <br/>
-      <br/>
-     <b style='font-style:bold'>2. 초대 수락하기</b>
-      <br/>
+    </td>
+    <td align="center">   
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/send-invitation.gif' width='40%'>
+    </td>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>초대 수락</td>
+    <td>동작</td>
+  </tr>
+  <tr>
+    <td align="center">
      <b>- 초대받은 사용자는 카카오톡으로 공유된 링크에 접속하여 질문에 대한 답변을 작성할 수 있습니다.</b>
       <br/>
       <br/>
@@ -83,7 +89,9 @@ _너는 어떻게 생각해? 나는…_
       <br/>
      <b>- 로그인에 성공하면 로그인 전에 작성한 답변을 등록할 수 있으며, 커플이 맺어짐과 동시에 서로의 답변을 확인할 수 있습니다.</b>
     </td>
-    <td align="center">
+    <td align="center">   
+      <img src='https://github.com/coding-union-kr/youare-iam-be/assets/86812098/9acbca85-058b-43c6-b203-236b169a3df2' width='40%'>
+    </td>
     </td>
   </tr>
   <tr align="center">
@@ -137,7 +145,7 @@ _너는 어떻게 생각해? 나는…_
       <b>오래된 질문은 스크롤을 위로 올려 확인할 수 있습니다.</b>
     </td>
     <td align="center">
-      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/chatroom.gif?raw=true' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-be/assets/86812098/ab0d1888-40f2-4843-a3fa-62e09857b75a' width='40%'>
     </td>
   </tr>
 </table>
