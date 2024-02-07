@@ -18,7 +18,6 @@ import com.letter.question.repository.QuestionRepository;
 import com.letter.question.repository.SelectQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +35,7 @@ public class MemberService {
     private final SelectQuestionRepository selectQuestionRepository;
 
     private final InviteOpponentCustomRepositoryImpl inviteOpponentCustomRepository;
+
 
     /**
      * 상대 초대 링크 생성 api
@@ -64,7 +64,8 @@ public class MemberService {
 
         // 질문 아이디 조회
         Question question = questionRepository.findQuestionById(request.getQuestionId()).orElseThrow(
-                () -> new RuntimeException(HttpStatus.BAD_REQUEST.name()));
+                () -> new CustomException(ErrorCode.QUESTION_NOT_FOUND)
+        );
 
         // 상대 초대 테이블에 정보 request 셋팅
         InviteOpponent inviteOpponent = request.toCreateInviteLink(uuid, question, member);
@@ -80,6 +81,8 @@ public class MemberService {
                 .build();
     }
 
+
+
     /**
      * 초대 수락 API
      *
@@ -91,7 +94,7 @@ public class MemberService {
 
         // 링크 고유 값으로 상대 초대 테이블에 해당 회원 조회
         InviteOpponent inviteOpponent = inviteOpponentRepository.findQuestionByLinkKey(request.getLinkKey()).orElseThrow(
-                () -> new RuntimeException(HttpStatus.BAD_REQUEST.name())
+                () -> new CustomException(ErrorCode.BAD_REQUEST)
         );
 
         // 초대한 사람의 아이디와 초대된 사람의 아이디가 같을 경우 에러 처리
@@ -115,6 +118,8 @@ public class MemberService {
             log.error("이미 커플이 된 회원입니다.");
             throw new CustomException(ErrorCode.ALREADY_COUPLE);
         }
+
+        // TODO 쿼리 보내는 것을 줄여보기
 
         //상대 초대 테이블에 노출 여부가 N인 경우 에러처리
         boolean isExistIsShowN = inviteOpponentCustomRepository.existByMemberIdAndIsShow(member.getId());
@@ -169,8 +174,6 @@ public class MemberService {
         // 답변 테이블에 정보 등록
         answerRepository.saveAll(answers);
 
-
-
         // 초대 상대 테이블에 노출 여부 'N' 으로 변경
         inviteOpponentCustomRepository.updateIsShow(inviteOpponent.getMember().getId());
 
@@ -178,6 +181,8 @@ public class MemberService {
                 .selectedQuestionId(selectQuestion.getId())
                 .build();
     }
+
+
 
     /**
      * 초대 링크로 랜딩되는 페이지 관련 API
@@ -205,6 +210,8 @@ public class MemberService {
     }
 
 
+
+    // TODO 개발자 주석 추가
     public MemberStatusResponse getUserStatus(Member member) {
         boolean isCouple = member.getCouple() != null;
         String linkKey = inviteOpponentCustomRepository.getLinkKey(member);
@@ -218,4 +225,5 @@ public class MemberService {
 
         return new MemberStatusResponse(userStatus, linkKey);
     }
+
 }
