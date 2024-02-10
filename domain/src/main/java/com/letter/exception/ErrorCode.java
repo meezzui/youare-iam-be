@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     /* 공통 Error */
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "B001","잘못된 요청값 입니다. 다시 확인해주새요."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "B001","잘못된 요청값 입니다."),
     NOT_FOUND(HttpStatus.NOT_FOUND, "B002","찾으시는 결과가 없습니다."),
 
     /* Auth 관련 Error */

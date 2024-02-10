@@ -41,6 +41,7 @@ public class CryptoHelper {
      * @return
      */
     public String encryptToString(String plainText) {
+        // TODO 불필요한 출력 삭제
         try {
             System.out.println("valueKey = " + valueKey);
             System.out.println("ivKey = " + iv);
@@ -68,6 +69,7 @@ public class CryptoHelper {
      * @return
      */
     public String decryptToString(String encryptedText) {
+        // TODO 불필요한 출력 삭제
         try{
             System.out.println("valueKey = " + valueKey);
             System.out.println("ivKey = " + iv);
