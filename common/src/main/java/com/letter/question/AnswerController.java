@@ -4,6 +4,7 @@ import com.letter.annotation.LoginCheck;
 import com.letter.annotation.User;
 import com.letter.member.entity.Member;
 import com.letter.question.dto.AnswerRequest;
+import com.letter.question.dto.ModifyAnswerRequest;
 import com.letter.question.dto.QuestionContentsResponse;
 import com.letter.question.service.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +56,23 @@ public class AnswerController {
             @RequestBody AnswerRequest answerRequest,
             @User Member member) {
         return answerService.registerAnswer(answerRequest, member);
+    }
+
+    @Operation(summary = "답변 수정", description = "Request body로 수정할 답변의 질문 ID와 수정할 답변 ID, 수정할 답변을 받아 수정하는 API")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "수정 성공"
+                    )
+            }
+    )
+    @LoginCheck
+    @PutMapping("/answer")
+    public ResponseEntity<Void> modifyAnswer(
+            @RequestBody ModifyAnswerRequest modifyAnswerRequest,
+            @User Member member) {
+        answerService.modifyAnswer(modifyAnswerRequest, member);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 }
