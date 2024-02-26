@@ -6,16 +6,19 @@ import com.letter.member.entity.Couple;
 import com.letter.member.entity.Member;
 import com.letter.member.repository.CoupleCustomRepositoryImpl;
 import com.letter.question.dto.AnswerRequest;
+import com.letter.question.dto.ModifyAnswerRequest;
 import com.letter.question.dto.QuestionContentsResponse;
 import com.letter.question.entity.Answer;
 import com.letter.question.entity.SelectQuestion;
 import com.letter.question.repository.AnswerRepository;
 import com.letter.question.repository.QuestionCustomRepositoryImpl;
+import com.letter.question.repository.SelectQuestionCustomRepositoryImpl;
 import com.letter.question.repository.SelectQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -27,6 +30,7 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final SelectQuestionRepository selectQuestionRepository;
+    private final SelectQuestionCustomRepositoryImpl selectQuestionCustomRepository;
     private final QuestionCustomRepositoryImpl questionCustomRepository;
 
     public ResponseEntity<QuestionContentsResponse> getAnswersQuestion(Long selectedQuestionId, Member member) {
@@ -69,6 +73,27 @@ public class AnswerService {
         answerRepository.save(new Answer(couple, member, selectQuestion, answerRequest.getAnswer()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    }
+
+    @Transactional
+    public void modifyAnswer(ModifyAnswerRequest modifyAnswerRequest, Member member) {
+
+        Optional<Couple> optionalCouple = coupleCustomRepository.findCoupleInMemberByMemberId(member.getId());
+        if (optionalCouple.isEmpty()) {
+            throw new CustomException(ErrorCode.COUPLE_NOT_FOUND);
+        }
+
+        final Couple couple = optionalCouple.get();
+
+        final SelectQuestion selectQuestion = selectQuestionCustomRepository.findAnswerBySelectQuestion(modifyAnswerRequest.getSelectQuestionId(), couple).orElseThrow(
+                () -> new CustomException(ErrorCode.BAD_REQUEST)
+        );
+
+        final Answer answer = answerRepository.findAnswerBySelectQuestionAndMemberAndIsShow(selectQuestion, member, "Y").orElseThrow(
+                () -> new CustomException(ErrorCode.BAD_REQUEST)
+        );
+
+        answer.updateAnswerContents(modifyAnswerRequest.getAnswer());
     }
 
 }
