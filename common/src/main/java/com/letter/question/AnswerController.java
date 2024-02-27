@@ -3,6 +3,7 @@ package com.letter.question;
 import com.letter.annotation.LoginCheck;
 import com.letter.annotation.User;
 import com.letter.member.entity.Member;
+import com.letter.question.dto.AnswerContentsResponse;
 import com.letter.question.dto.AnswerRequest;
 import com.letter.question.dto.ModifyAnswerRequest;
 import com.letter.question.dto.QuestionContentsResponse;
@@ -34,7 +35,7 @@ public class AnswerController {
             }
     )
     @LoginCheck
-    @GetMapping("/answer")
+    @GetMapping("/answer/question")
     public ResponseEntity<QuestionContentsResponse> getAnswersQuestion(
             @RequestParam(name = "selected-question-id") Long selectedQuestionId,
             @User Member member) {
@@ -56,6 +57,23 @@ public class AnswerController {
             @RequestBody AnswerRequest answerRequest,
             @User Member member) {
         return answerService.registerAnswer(answerRequest, member);
+    }
+
+    @Operation(summary = "답변 조회", description = "")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "조회 성공"
+                    )
+            }
+    )
+    @LoginCheck
+    @GetMapping("/answer")
+    public ResponseEntity<AnswerContentsResponse> getAnswer(
+            @RequestParam(name = "selected-question-id") Long selectedQuestionId,
+            @User Member member) {
+        return ResponseEntity.ok(answerService.getAnswer(selectedQuestionId, member));
     }
 
     @Operation(summary = "답변 수정", description = "Request body로 수정할 답변의 질문 ID와 수정할 답변 ID, 수정할 답변을 받아 수정하는 API")

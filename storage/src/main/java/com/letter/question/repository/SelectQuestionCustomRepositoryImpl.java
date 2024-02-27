@@ -48,6 +48,16 @@ public class SelectQuestionCustomRepositoryImpl implements SelectQuestionCustomR
                 .fetch();
     }
 
+    public Long countSelectQuestionBySelectQuestionId(Long selectQuestionId, Couple couple) {
+        return jpaQueryFactory
+                .select(selectQuestion.count())
+                .from(selectQuestion)
+                .where(selectQuestion.id.eq(selectQuestionId)
+                        .and(selectQuestion.couple.eq(couple))
+                        .and(selectQuestion.isShow.eq("Y")))
+                .fetchOne();
+    }
+
     public Optional<SelectQuestion> findAnswerBySelectQuestion(Long selectQuestionId, Couple couple) {
         return Optional.ofNullable(jpaQueryFactory
                 .select(selectQuestion)
