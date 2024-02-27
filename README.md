@@ -59,7 +59,7 @@ _너는 어떻게 생각해? 나는…_
       <b>이동하여 카카오 로그인을 할 수 있습니다.</b>
     </td>
     <td align="center">
-      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/login.gif?raw=true' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/login.gif?raw=true' width='100%'>
     </td>
   </tr>
   <tr align="center">
@@ -71,7 +71,7 @@ _너는 어떻게 생각해? 나는…_
      <b>상대방에게 묻고 싶은 질문을 선택하고, 카카오톡 친구에게 공유하여 초대할 수 있습니다.</b>
     </td>
     <td align="center">   
-      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/send-invitation.gif' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/send-invitation.gif' width='100%'>
     </td>
     </td>
   </tr>
@@ -90,7 +90,7 @@ _너는 어떻게 생각해? 나는…_
      <b>- 로그인에 성공하면 로그인 전에 작성한 답변을 등록할 수 있으며, 커플이 맺어짐과 동시에 서로의 답변을 확인할 수 있습니다.</b>
     </td>
     <td align="center">   
-      <img src='https://github.com/coding-union-kr/youare-iam-be/assets/86812098/9acbca85-058b-43c6-b203-236b169a3df2' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-be/assets/86812098/9acbca85-058b-43c6-b203-236b169a3df2' width='100%'>
     </td>
     </td>
   </tr>
@@ -108,7 +108,7 @@ _너는 어떻게 생각해? 나는…_
       <b>확인할 수 있습니다.</b>
     </td>
     <td align="center">
-      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/question.gif?raw=true' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/question.gif?raw=true' width='100%'>
     </td>
   </tr>
   <tr align="center">
@@ -125,7 +125,7 @@ _너는 어떻게 생각해? 나는…_
       <b>안내 메시지가 오버레이되며 답변을 확인할 수 없습니다.</b>
     </td>
     <td align="center">
-      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/answer.gif?raw=true' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-fe/blob/dev/docs/answer.gif?raw=true' width='100%'>
     </td>
   </tr>
   <tr align="center">
@@ -145,7 +145,7 @@ _너는 어떻게 생각해? 나는…_
       <b>오래된 질문은 스크롤을 위로 올려 확인할 수 있습니다.</b>
     </td>
     <td align="center">
-      <img src='https://github.com/coding-union-kr/youare-iam-be/assets/86812098/ab0d1888-40f2-4843-a3fa-62e09857b75a' width='40%'>
+      <img src='https://github.com/coding-union-kr/youare-iam-be/assets/86812098/ab0d1888-40f2-4843-a3fa-62e09857b75a' width='100%'>
     </td>
   </tr>
 </table>
@@ -246,12 +246,10 @@ OAUTH_REDIRECT_URI=
   - 마일스톤 일정 조정✅
       - 프로젝트 진행 중 일부 기능 개발에 예상보다 더 많은 시간이 소요된 경우에는, 회의를 통해서 마일스톤 일정을 조정하고, 추가적인 리소스를 해당 작업에 할당해서 프로젝트를 완료할 수 있었습니다.
 <br/>
-
-2. 회고를 통한 팀원들의 성장(작성 예정)
    
 <br/>
 
-3. 기능 우선순위💈
+2. 기능 우선순위💈
   - 첫 기획 완료 후 필수 기능과 추가 기능이 무엇인지 정의하고 나눠서 MVP 목표를 설정했습니다.
   - MVP 목표 중에서도 중요도로 정리를 해서 소셜 로그인, 질문 선택 후 등록, 답변 등록, 질문과 답변 상세 조회 를 핵심 기능으로 설정했습니다.
     - 핵심 기능으로 설정한 이유🧐
@@ -262,7 +260,7 @@ OAUTH_REDIRECT_URI=
     
 <br/>
 
-4. 백엔드 업무 분담 기준🎈
+3. 백엔드 업무 분담 기준🎈
 - 백엔드 업무를 크게 세 가지로 나눌 수 있습니다. => '로그인', '배포', '기능 API'
 - 업무를 나눌 때, 저희는 각자의 도전 과제와 가장 하고 싶은 일을 중심으로 고려했어요. => 쪙이(본인): sns 로그인, 감티: 배포
 - 그래서 '로그인'과 '배포' 업무를 먼저 분담하고, '기능 API'는 각자가 나눠서 맡았습니다.
